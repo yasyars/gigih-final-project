@@ -16,13 +16,6 @@
 .env
 
 
-
-## Documentation cache and generated files:
-/.yardoc/
-/_yardoc/
-/doc/
-/rdoc/
-
 ## Environment normalization:
 /.bundle/
 /vendor/bundle
