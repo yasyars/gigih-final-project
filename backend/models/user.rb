@@ -1,11 +1,15 @@
 require_relative '../db/db_connector'
 
 class User
+  attr_reader :id, :username, :email
+  attr_accessor :posts, :bio
+
   def initialize(param)
     @id = param[:id]
     @username = param[:username]
     @email = param[:email]
     @bio = param[:bio]
+    @posts = param[:posts] ? param[:posts] : []
   end
 
   def valid?
