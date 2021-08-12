@@ -22,7 +22,7 @@ describe User do
     end
 
     context 'when initialized with invalid email' do
-      it 'should return false' do
+      it 'should return error' do
         user = User.new({
           username: "meryoround",
           email: "mery.g"
@@ -39,7 +39,7 @@ describe User do
     end
 
     context 'when initialized with empty username' do
-      it 'should return false' do
+      it 'should return error' do
         user = User.new({
           username: " ",
           email: "mery@go.round"
@@ -50,7 +50,7 @@ describe User do
     end
 
     context 'when initialized with empty username' do
-      it 'should return false' do
+      it 'should return error' do
         user2 = User.new({
           username: " ",
           email: ""
@@ -62,7 +62,43 @@ describe User do
   end
 
   describe 'save' do
+
+    context 'when save non unique data' do
+      it 'should fail to run insert query' do
+        user = User.new({
+          username: 'merygoround',
+          email: 'mery@go.round',
+          bio: 'A ruby lover || a musician'
+        })
+
+        user.save
+
+        stub_query ="INSERT INTO users (username,email,bio) VALUES ('merygoround','mery@go.round','A ruby lover || a musician')"
+
+        expect{user.save}.to raise_error(RuntimeError, "Invalid Username")
+      end
+    end
+
     context 'when save valid object' do
+      it 'should succesfully run insert query' do
+        user = User.new({
+          username: 'merygoround',
+          email: 'mery@go.round',
+          bio: 'A ruby lover || a musician'
+        })
+
+        stub_query ="INSERT INTO users (username,email,bio) VALUES ('merygoround','mery@go.round','A ruby lover || a musician')"
+        username_val_query="SELECT id FROM users WHERE username= 'merygoround'"
+        email_val_query = "SELECT id FROM users WHERE email= 'mery@go.round'"
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        allow(stub_client).to receive(:query).with(username_val_query).and_return([])
+        allow(stub_client).to receive(:query).with(email_val_query).and_return([])
+        allow(stub_client).to receive(:close)
+        expect(stub_client).to receive(:query).with(stub_query)
+
+        user.save
+      end
     end
   end
 end

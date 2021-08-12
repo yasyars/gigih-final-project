@@ -8,7 +8,7 @@ class User
     @id = param[:id]
     @username = param[:username]
     @email = param[:email]
-    @bio = param[:bio]
+    @bio = param[:bio] ? param[:bio] : ""
     @posts = param[:posts] ? param[:posts] : []
   end
 
@@ -23,7 +23,7 @@ class User
     query = "SELECT id FROM users WHERE username= '#{@username}'"
     raw_data = client.query(query)
     client.close
-    return false unless raw_data.each.empty?
+    return false unless raw_data.count==0
     true
   end
 
@@ -31,8 +31,15 @@ class User
     client = create_db_client
     query = "SELECT id FROM users WHERE email= '#{@email}'"
     raw_data = client.query(query)
-    return false unless raw_data.each.empty?
+    return false unless raw_data.count == 0
     true
   end
 
+  def save
+    self.valid?
+    client = create_db_client
+    query = "INSERT INTO users (username,email,bio) VALUES ('#{@username}','#{@email}','#{@bio}')"
+    client.query(query)
+    client.close
+  end
 end
