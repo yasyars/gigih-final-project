@@ -24,35 +24,45 @@ describe User do
     context 'when initialized with invalid email' do
       it 'should return false' do
         user = User.new({
-          username: "merygoround",
+          username: "meryoround",
           email: "mery.g"
         })
 
         user2 = User.new({
-          username: "merygoround",
+          username: "merysoround",
           email: "mapwe"
         })
 
-        expect(user.valid?).to be false
-        expect(user2.valid?).to be false
+        expect{user.valid?}.to raise_error(RuntimeError,"Invalid Email")
+        expect{user2.valid?}.to raise_error(RuntimeError,"Invalid Email")
       end
     end
 
-    context 'when initialized with empty data' do
+    context 'when initialized with empty username' do
       it 'should return false' do
         user = User.new({
           username: " ",
           email: "mery@go.round"
         })
 
+        expect{user.valid?}.to raise_error(RuntimeError,"Invalid Username")
+      end
+    end
+
+    context 'when initialized with empty username' do
+      it 'should return false' do
         user2 = User.new({
           username: " ",
-          email: "mery@go.round"
+          email: ""
         })
 
-        expect(user.valid?).to be false
-        expect(user2.valid?).to be false
+        expect{user2.valid?}.to raise_error(RuntimeError,"Invalid Username")
       end
+    end
+  end
+
+  describe 'save' do
+    context 'when save valid object' do
     end
   end
 end
