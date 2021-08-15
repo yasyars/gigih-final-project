@@ -5,7 +5,7 @@ class User
   attr_accessor :posts, :bio
 
   def initialize(param)
-    @id = param[:id]
+    @id = param[:id] ? param[:id] : nil
     @username = param[:username]
     @email = param[:email]
     @bio = param[:bio] ? param[:bio] : ""
@@ -42,4 +42,26 @@ class User
     client.query(query)
     client.close
   end
+
+  def self.find_by_id(id)
+    client = create_db_client
+    query = "SELECT * FROM users WHERE id= #{id}"
+    raw_data = client.query(query)
+    client.close
+
+    if raw_data.count == 0
+      return nil
+    end
+
+    data = raw_data.first
+    user = User.new({
+      id: data['id'],
+      username: data['username'],
+      email: data['email'],
+      bio: data['bio']
+    })
+    user
+  end
+
+  
 end

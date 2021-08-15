@@ -61,8 +61,7 @@ describe User do
     end
   end
 
-  describe 'save' do
-
+  describe '#save' do
     context 'when save non unique data' do
       it 'should fail to run insert query' do
         user = User.new({
@@ -101,4 +100,41 @@ describe User do
       end
     end
   end
+  
+  describe '#find_by_id' do
+    context 'when find non existent object' do
+      it 'should return nil' do
+        user = User.find_by_id(1)
+        expect(user).to be_nil
+      end
+    end
+
+    context 'when find exist object' do
+      it 'should return right object' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query ="SELECT * FROM users WHERE id= 1"
+        
+        stub_raw_data= [{
+            'id' => 1,
+            'username'  => 'merygoround',
+            'email'  => 'mery@go.round',
+            'bio'  => 'A coder'
+        }]
+
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
+        allow(stub_client).to receive(:close)
+
+        user = User.find_by_id(1)
+
+        expect(user.id).to eq(1)
+        expect(user.username).to eq('merygoround')
+        expect(user.email).to eq('mery@go.round')
+        expect(user.bio).to eq('A coder')
+      end
+    end
+  end
+  
+  
+
 end
