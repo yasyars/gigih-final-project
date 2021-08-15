@@ -63,5 +63,25 @@ class User
     user
   end
 
-  
+  def self.find_all
+    client = create_db_client
+    query = "SELECT * FROM users"
+    raw_data = client.query(query)
+    client.close
+
+    if raw_data.count == 0
+      return nil
+    end
+    users = Array.new
+    raw_data.each do |data|
+      user = User.new({
+        id: data['id'],
+        username: data['username'],
+        email: data['email'],
+        bio: data['bio']
+      })
+      users.push(user)
+    end
+    users
+  end
 end

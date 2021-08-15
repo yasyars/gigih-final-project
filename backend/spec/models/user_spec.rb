@@ -135,6 +135,42 @@ describe User do
     end
   end
   
-  
+  describe '#find_all' do
+    context 'when no user at all' do
+      it 'should return nil' do
+        user = User.find_all
+        expect(user).to be_nil
+      end
+    end
+
+    context 'when there is two users' do
+      it 'should return correct array' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query ="SELECT * FROM users"
+        
+        stub_raw_data= [{
+            'id' => 1,
+            'username'  => 'merygoround',
+            'email'  => 'mery@go.round',
+            'bio'  => 'A coder'
+        },{
+            'id' => 2,
+            'username'  => 'merygocube',
+            'email'  => 'mery@go.cube',
+            'bio'  => 'A coder'
+        }]
+
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
+        allow(stub_client).to receive(:close)
+
+        users = User.find_all
+
+        expect(users.size).to eq(2)
+        expect(users[0].id).to eq(1)
+        expect(users[1].id).to eq(2)
+      end
+    end
+  end
 
 end
