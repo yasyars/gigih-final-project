@@ -11,8 +11,8 @@ class Hashtag
   end
 
   def valid?
-    raise "Invalid Hashtag" if @word.nil? || @word.gsub(/\s+/, "")=="" || !!(@word !~ /^#\S*$/)
-    true
+    hashtag_pattern = /^#\S*$/
+    return !@word.nil? && @word.gsub(/\s+/, "")!="" && !!(@word =~ hashtag_pattern)
   end
 
 end
