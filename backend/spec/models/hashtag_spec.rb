@@ -37,11 +37,39 @@ describe Hashtag do
 
     context 'when initialized with empty word' do
       it 'should return false' do
-       hashtag = Hashtag.new({
+        hashtag = Hashtag.new({
           word: "",
         })
         expect(hashtag.valid?).to be false
       end
     end
   end
+
+  describe '#unique?' do
+    context 'when initialized with unique values' do
+      it 'should return true' do
+        hashtag = Hashtag.new({
+          word: "#generasigigih"
+        })
+        expect(hashtag.unique?).to be true
+      end
+    end
+
+    context 'when initialized with duplicate data' do
+      it 'should return false' do
+        hashtag = Hashtag.new({
+          word: "#GenerasiGigih"
+        })
+
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query ="SELECT COUNT(id) as count FROM hashtags WHERE word = '#generasigigih'"
+        allow(stub_client).to receive(:query).with(stub_query).and_return([{"count" => 1}])
+        allow(stub_client).to receive(:close)
+        expect(hashtag.unique?).to be false
+      end
+    end
+  end
+
+  
 end

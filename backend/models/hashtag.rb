@@ -15,4 +15,12 @@ class Hashtag
     return !@word.nil? && @word.gsub(/\s+/, "")!="" && !!(@word =~ hashtag_pattern)
   end
 
+  def unique?
+    client = create_db_client
+    query = "SELECT COUNT(id) as count FROM hashtags WHERE word = '#{@word.downcase}'"
+    raw_data = client.query(query)
+    client.close
+    count = raw_data.first["count"]
+    count == 0
+  end
 end
