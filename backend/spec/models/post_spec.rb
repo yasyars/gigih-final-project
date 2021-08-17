@@ -50,4 +50,58 @@ describe Post do
       end
     end
   end
+
+  describe '#extract_hashtag' do
+    context 'when initialized with no hashtag' do
+      it 'should return empty array' do
+        user = double
+
+        post = Post.new({
+          content: "Hai semua, selamat pagi semoga harimu menyenangkan",
+          user: user
+        })
+
+        expect(post.extract_hashtag).to eq([])
+      end
+    end
+
+    context 'when initialized with a hashtag' do
+      it 'should return array with a member' do
+        user = double
+
+        post = Post.new({
+          content: "Hai semuanya, bagus gak pakaianku? #ootd",
+          user: user
+        })
+
+        expect(post.extract_hashtag).to eq(['#ootd'])
+      end
+    end
+
+    context 'when initialized with 2 same hashtag' do
+      it 'should return array with one member' do
+        user = double
+
+        post = Post.new({
+          content: "Hai semuanya, bagus gak pakaianku? #ootd #oOtD",
+          user: user
+        })
+
+        expect(post.extract_hashtag).to eq(['#ootd'])
+      end
+    end
+
+    context 'when initialized with 2 different hashtag' do
+      it 'should return array with 2 members' do
+        user = double
+
+        post = Post.new({
+          content: "Hai semuanya, bagus gak pakaianku? #ootd #sunday",
+          user: user
+        })
+
+        expect(post.extract_hashtag).to eq(['#ootd','#sunday'])
+      end
+    end
+  end
 end

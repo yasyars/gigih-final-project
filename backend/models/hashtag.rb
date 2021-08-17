@@ -11,8 +11,8 @@ class Hashtag
   end
 
   def valid?
-    hashtag_pattern = /^#\S*$/
-    return !@word.nil? && @word.gsub(/\s+/, "")!="" && !!(@word =~ hashtag_pattern)
+    word_pattern = /^#\S+$/
+    return !@word.nil? && @word.gsub(/\s+/, "")!="" && !!(@word =~ word_pattern)
   end
 
   def unique?
@@ -40,7 +40,7 @@ class Hashtag
     client.close
 
     return nil if raw_data.count == 0
-    
+
     data = raw_data.first
     hashtag = Hashtag.new({
       id: data['id'],

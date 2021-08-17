@@ -16,5 +16,11 @@ class Post
     @content.length <= 1000
   end
 
+  def extract_hashtag
+    hashtag_pattern = /#\S+/
+    hashtags = @content.downcase.scan(hashtag_pattern)
+    hashtags.uniq
+  end
+
 
 end
