@@ -79,7 +79,7 @@ class User
     client.close
 
     if raw_data.count == 0
-      return nil
+      return []
     end
     users = Array.new
     raw_data.each do |data|

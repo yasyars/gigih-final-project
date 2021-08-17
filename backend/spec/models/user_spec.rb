@@ -238,9 +238,9 @@ describe User do
   
   describe '#find_all' do
     context 'when no user at all' do
-      it 'should return nil' do
+      it 'should return empty array' do
         user = User.find_all
-        expect(user).to be_nil
+        expect(user).to eq([])
       end
     end
 
@@ -251,15 +251,15 @@ describe User do
         stub_query ="SELECT * FROM users"
         
         stub_raw_data= [{
-            'id' => 1,
-            'username'  => 'merygoround',
-            'email'  => 'mery@go.round',
-            'bio'  => 'A coder'
+          'id' => 1,
+          'username'  => 'merygoround',
+          'email'  => 'mery@go.round',
+          'bio'  => 'A coder'
         },{
-            'id' => 2,
-            'username'  => 'merygocube',
-            'email'  => 'mery@go.cube',
-            'bio'  => 'A coder'
+          'id' => 2,
+          'username'  => 'merygocube',
+          'email'  => 'mery@go.cube',
+          'bio'  => 'A coder'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
