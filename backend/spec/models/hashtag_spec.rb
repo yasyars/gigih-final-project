@@ -111,76 +111,34 @@ describe Hashtag do
     end
   end
 
-  # describe '#find_by_id' do
-  #   context 'when find non existent object' do
-  #     it 'should return nil' do
-  #       user = User.find_by_id(1)
-  #       expect(user).to be_nil
-  #     end
-  #   end
+  describe '#find_by_id' do
+    context 'when find non existent object' do
+      it 'should return nil' do
+        hashtag = Hashtag.find_by_id(1)
+        expect(hashtag).to be_nil
+      end
+    end
 
-  #   context 'when find exist object' do
-  #     it 'should return right object' do
-  #       stub_client = double
-  #       allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-  #       stub_query ="SELECT * FROM users WHERE id= 1"
+    context 'when find exist object' do
+      it 'should return right object' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query ="SELECT * FROM hashtags WHERE id= 1"
         
-  #       stub_raw_data= [{
-  #           'id' => 1,
-  #           'username'  => 'merygoround',
-  #           'email'  => 'mery@go.round',
-  #           'bio'  => 'A coder'
-  #       }]
+        stub_raw_data= [{
+            'id' => 1,
+            'word'  => '#generasigigih'
+        }]
 
-  #       allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
-  #       allow(stub_client).to receive(:close)
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
+        allow(stub_client).to receive(:close)
 
-  #       user = User.find_by_id(1)
+        hashtag = Hashtag.find_by_id(1)
 
-  #       expect(user.id).to eq(1)
-  #       expect(user.username).to eq('merygoround')
-  #       expect(user.email).to eq('mery@go.round')
-  #       expect(user.bio).to eq('A coder')
-  #     end
-  #   end
-  # end
-  
-  # describe '#find_all' do
-  #   context 'when no user at all' do
-  #     it 'should return nil' do
-  #       user = User.find_all
-  #       expect(user).to be_nil
-  #     end
-  #   end
-
-  #   context 'when there is two users' do
-  #     it 'should return correct array' do
-  #       stub_client = double
-  #       allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-  #       stub_query ="SELECT * FROM users"
-        
-  #       stub_raw_data= [{
-  #           'id' => 1,
-  #           'username'  => 'merygoround',
-  #           'email'  => 'mery@go.round',
-  #           'bio'  => 'A coder'
-  #       },{
-  #           'id' => 2,
-  #           'username'  => 'merygocube',
-  #           'email'  => 'mery@go.cube',
-  #           'bio'  => 'A coder'
-  #       }]
-
-  #       allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
-  #       allow(stub_client).to receive(:close)
-
-  #       users = User.find_all
-
-  #       expect(users.size).to eq(2)
-  #       expect(users[0].id).to eq(1)
-  #       expect(users[1].id).to eq(2)
-  #     end
-  #   end
-  # end
+        expect(hashtag.id).to eq(1)
+        expect(hashtag.word).to eq('#generasigigih')
+      end
+    end
+  end
   
 end
