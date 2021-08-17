@@ -72,8 +72,6 @@ describe User do
 
         user.save
 
-        stub_query ="INSERT INTO users (username,email,bio) VALUES ('merygoround','mery@go.round','A ruby lover || a musician')"
-
         expect{user.save}.to raise_error(RuntimeError, "Invalid Username")
       end
     end

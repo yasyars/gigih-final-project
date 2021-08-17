@@ -23,4 +23,13 @@ class Hashtag
     count = raw_data.first["count"]
     count == 0
   end
+
+  def save
+    raise "Invalid Hashtag" if !valid?
+    raise "Duplicate Data" if !unique?
+    client = create_db_client
+    query = "INSERT INTO hashtags (word) VALUES ('#{@word}')"
+    client.query(query)
+    client.close
+  end
 end
