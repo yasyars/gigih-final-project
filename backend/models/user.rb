@@ -12,31 +12,40 @@ class User
     @posts = param[:posts] ? param[:posts] : []
   end
 
-  def valid?
-    raise "Invalid Username" if @username.nil? || @username.gsub(/\s+/, "")=="" || !username_unique?
-    raise "Invalid Email"  if @email.nil? || !!(@email !~ URI::MailTo::EMAIL_REGEXP) || !email_unique?
+  def username_valid?
+    return false if @username.nil? || @username.gsub(/\s+/, "")=="" 
+    true
+  end
+
+  def email_valid?
+    return false if @email.nil? || !!(@email !~ URI::MailTo::EMAIL_REGEXP)
     true
   end
 
   def username_unique?
     client = create_db_client
-    query = "SELECT id FROM users WHERE username= '#{@username}'"
+    query = "SELECT COUNT(id) as count FROM users WHERE username = '#{@username}'"
     raw_data = client.query(query)
     client.close
-    return false unless raw_data.count==0
-    true
+    count = raw_data.first["count"]
+    count==0
   end
 
   def email_unique?
     client = create_db_client
-    query = "SELECT id FROM users WHERE email= '#{@email}'"
+    query = "SELECT COUNT(id) as count FROM users WHERE email = '#{@email}'"
     raw_data = client.query(query)
-    return false unless raw_data.count == 0
-    true
+    client.close
+    count = raw_data.first["count"]
+    count==0
   end
 
   def save
-    self.valid?
+    raise "Invalid Username" if !username_valid?
+    raise "Invalid Email" if !email_valid?
+    raise "Duplicate Username" if !username_unique?
+    raise "Duplicate Email" if !email_unique?
+
     client = create_db_client
     query = "INSERT INTO users (username,email,bio) VALUES ('#{@username}','#{@email}','#{@bio}')"
     client.query(query)
