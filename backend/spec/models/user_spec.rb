@@ -188,12 +188,11 @@ describe User do
         })
 
         stub_query ="INSERT INTO users (username,email,bio) VALUES ('merygoround','mery@go.round','A ruby lover || a musician')"
-        username_val_query="SELECT COUNT(id) as count FROM users WHERE username = 'merygoround'"
-        email_val_query = "SELECT COUNT(id) as count FROM users WHERE email = 'mery@go.round'"
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        allow(stub_client).to receive(:query).with(username_val_query).and_return([{"count" => 0}])
-        allow(stub_client).to receive(:query).with(email_val_query).and_return([{"count" => 0}])
+        allow(user).to receive(:username_unique?).and_return(true)
+        allow(user).to receive(:email_unique?).and_return(true)
+
         expect(stub_client).to receive(:query).with(stub_query)
         allow(stub_client).to receive(:close)
 
