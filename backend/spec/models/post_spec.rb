@@ -1,18 +1,30 @@
 require_relative '../../db/db_connector'
 require_relative '../../models/post'
-require_relative '../../models/user'
 
 describe Post do
   before [:each] do
     client = create_db_client
     client.query("SET FOREIGN_KEY_CHECKS = 0")
     client.query("TRUNCATE TABLE posts")
+    client.query("TRUNCATE TABLE posts_hashtags")
     client.query("SET FOREIGN_KEY_CHECKS =1")
     client.close
   end  
 
   describe '#valid?' do
-    context 'when initialized with <1000 char' do
+    context 'when initialized with space only' do
+      it 'should return true' do
+        user = double
+
+        post = Post.new({
+          content: "     ",
+          user: user
+        })
+
+        expect(post.valid?).to be false
+      end
+    end
+    context 'when initialized with 0<char<1000' do
       it 'should return true' do
         user = double
 

@@ -13,7 +13,7 @@ class Post
   end
 
   def valid?
-    @content.length <= 1000
+    @content.length <= 1000 && @content.gsub(/\s+/, "")!=""
   end
 
   def extract_hashtag
