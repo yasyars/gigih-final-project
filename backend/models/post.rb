@@ -22,6 +22,26 @@ class Post
     hashtags.uniq
   end
 
+  def self.find_by_id(id)
+    client = create_db_client
+    query = "SELECT * FROM posts WHERE id = #{id}"
+    raw_data = client.query(query)
+    client.close
+    return [] if raw_data.count == 0 
+    posts = Array.new
+    raw_data.each do |data|
+      post = Post.new({
+        id: data['id'],
+        content: data['content'],
+        user: User.find_by_id(data['user_id']),
+        attachment: data['attachment'],
+        timestamp: data['timestamp']
+      })
+      posts.push(post)
+    end
+    posts
+  end
+
   def self.find_by_hashtag(hashtag)
     client = create_db_client
     query = "SELECT * FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id WHERE hashtag_id = #{hashtag.id}"
@@ -33,7 +53,7 @@ class Post
       post = Post.new({
         id: data['id'],
         content: data['content'],
-        user: User.find_by_id(data['id']),
+        user: User.find_by_id(data['user_id']),
         attachment: data['attachment'],
         timestamp: data['timestamp']
       })
