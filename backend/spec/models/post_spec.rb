@@ -13,7 +13,7 @@ describe Post do
 
   describe '#valid?' do
     context 'when initialized with space only' do
-      it 'should return true' do
+      it 'should return false' do
         user = double
 
         post = Post.new({
