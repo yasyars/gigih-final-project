@@ -79,7 +79,7 @@ describe Hashtag do
         })
         hashtag.save
 
-        expect{hashtag.save}.to raise_error(RuntimeError, "Duplicate Data")
+        expect{hashtag.save}.to raise_error(StandardError, "Duplicate Data")
       end
     end
 
@@ -88,7 +88,7 @@ describe Hashtag do
         hashtag = Hashtag.new({
           word: "asd"
         })
-        expect{hashtag.save}.to raise_error(RuntimeError, "Invalid Hashtag")
+        expect{hashtag.save}.to raise_error(StandardError, "Invalid Hashtag")
       end
     end
 
@@ -126,8 +126,8 @@ describe Hashtag do
         stub_query ="SELECT * FROM hashtags WHERE id= 1"
         
         stub_raw_data= [{
-            'id' => 1,
-            'word'  => '#generasigigih'
+          'id' => 1,
+          'word'  => '#generasigigih'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -137,6 +137,63 @@ describe Hashtag do
 
         expect(hashtag.id).to eq(1)
         expect(hashtag.word).to eq('#generasigigih')
+      end
+    end
+  end
+
+  describe '#find_trending' do
+    context 'when find non existent object' do
+      it 'should return empty array' do
+        hashtag = Hashtag.find_trending
+        expect(hashtag).to eq([])
+      end
+    end
+
+    context 'when there are trending' do
+      it 'should return right array' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query = "SELECT hashtags.id, hashtags.word
+            FROM hashtags
+            JOIN (SELECT post_id, hashtag_id
+            		FROM posts
+            		JOIN posts_hashtags ON posts.id = posts_hashtags.post_id
+            		WHERE timestamp >= NOW() - INTERVAL 1 DAY
+
+            		UNION ALL
+
+            		SELECT comment_id, hashtag_id
+            		FROM comments
+            		JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id
+            		WHERE timestamp >= NOW() - INTERVAL 1 DAY) as hashtag_data
+            ON hashtags.id = hashtag_data.hashtag_id
+            GROUP BY hashtag_id
+            ORDER BY COUNT(hashtag_data.post_id) DESC
+            LIMIT 5;"
+        
+        stub_raw_data= [{
+          'id' => 1,
+          'word'  => '#generasigigih1'
+        },{
+          'id' => 2,
+          'word'  => '#generasigigih2'
+        },{
+          'id' => 3,
+          'word'  => '#generasigigih3'
+        },{
+          'id' => 4,
+          'word'  => '#generasigigih4'
+        },{
+          'id' => 5,
+          'word'  => '#generasigigih5'
+        }]
+
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
+        allow(stub_client).to receive(:close)
+
+        hashtag = Hashtag.find_trending
+
+        expect(hashtag.size).to eq(5)
       end
     end
   end
