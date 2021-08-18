@@ -29,4 +29,25 @@ class Comment < Post
     comments
   end
 
+  def self.find_by_id(id)
+    client = create_db_client
+    query = "SELECT * FROM comments WHERE id = #{id}"
+    raw_data = client.query(query)
+    client.close
+    return [] if raw_data.count == 0 
+    comments = Array.new
+    raw_data.each do |data|
+      comment = Comment.new({
+        id: data['id'],
+        content: data['content'],
+        user: User.find_by_id(data['user_id']),
+        post: Post.find_by_id(data['post_id']),
+        attachment: data['attachment'],
+        timestamp: data['timestamp']
+      })
+      comments.push(comment)
+    end
+    comments
+  end
+
 end

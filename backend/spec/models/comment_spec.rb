@@ -183,4 +183,48 @@ describe Comment do
       end
     end
   end
+
+  describe '#find_by_id' do
+    context 'when there is no post that matches' do
+      it 'should return empty array' do
+        res = Comment.find_by_id(1)
+        expect(res).to eq([])
+      end
+    end
+
+    context 'when there is posts that match' do
+      it 'should return array with members' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query = "SELECT * FROM comments WHERE id = 1"
+        stub_raw_data_post = [{
+          'id' => 1,
+          'content' => "#ootd yey",
+          'user_id' => 1,
+          'post_id' => 1,
+          'attachment' => nil,
+          'timestamp' => '2021-08-18 01:08:44'
+        },{
+          'id' => 2,
+          'content' => "#ootd asik",
+          'user_id' => 1,
+          'post_id' => 1,
+          'attachment' => nil,
+          'timestamp' => '2021-08-18 01:08:44'
+        }]
+
+        user = double
+        post = double
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data_post)
+        allow(User).to receive(:find_by_id).and_return(user)
+        allow(Post).to receive(:find_by_id).and_return(post)
+
+        allow(stub_client).to receive(:close)
+        
+        res = Comment.find_by_id(1)
+        expect(res.size).to eq(2)
+      end
+    end
+  end
+
 end
