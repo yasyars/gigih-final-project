@@ -1,5 +1,7 @@
 require_relative '../../db/db_connector'
 require_relative '../../models/comment'
+require_relative '../../models/post'
+require_relative '../../models/user'
 
 describe Comment do
   before [:each] do
@@ -134,4 +136,51 @@ describe Comment do
     end
   end
 
+  describe '#find_by_hashtag' do
+    context 'when there is no comment that matches' do
+      it 'should return empty array' do
+        hashtag = double
+        allow(hashtag).to receive(:id).and_return(1)
+        res = Comment.find_by_hashtag(hashtag)
+        expect(res).to eq([])
+      end
+    end
+
+    context 'when there are comments that match' do
+      it 'should return array with members' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query = "SELECT * FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id WHERE hashtag_id = 1"
+        stub_raw_data_comment = [{
+          'id' => 1,
+          'content' => "#ootd yey",
+          'user_id' => 1,
+          'post_id' => 1,
+          'attachment' => nil,
+          'timestamp' => '2021-08-18 01:08:44'
+        },{
+          'id' => 2,
+          'content' => "#ootd asik",
+          'user_id' => 1,
+          'post_id' => 1,
+          'attachment' => nil,
+          'timestamp' => '2021-08-18 01:08:44'
+        }]
+
+        user = double
+        post = double
+
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data_comment)
+        allow(User).to receive(:find_by_id).and_return(user)
+        allow(Post).to receive(:find_by_id).and_return(post)
+
+        allow(stub_client).to receive(:close)
+        
+        hashtag = double
+        allow(hashtag).to receive(:id).and_return(1)
+        res = Comment.find_by_hashtag(hashtag)
+        expect(res.size).to eq(2)
+      end
+    end
+  end
 end
