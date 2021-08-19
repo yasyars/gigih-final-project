@@ -33,6 +33,13 @@ class Hashtag
     client.close
   end
 
+  def self.save_or_find(word)
+    hashtag = Hashtag.new({word: word})
+    hashtag.save if hashtag.unique?
+    hashtag = Hashtag.find_by_word(word)
+    hashtag
+  end
+
   def self.find_by_id(id)
     client = create_db_client
     query = "SELECT * FROM hashtags WHERE id= #{id}"

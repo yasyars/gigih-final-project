@@ -111,6 +111,33 @@ describe Hashtag do
     end
   end
 
+  describe '#save_or_find' do
+    context 'when initialized with unique hashtag' do
+      it 'should save hashtag' do        
+        hashtag = double
+        allow(Hashtag).to receive(:new).and_return(hashtag)
+        allow(hashtag).to receive(:unique?).and_return(true)
+        allow(Hashtag).to receive(:find_by_word)
+        
+        expect(hashtag).to receive(:save)
+       
+        Hashtag.save_or_find("ootd")
+      end
+    end
+    context 'when initialized with not unique hashtag' do
+      it 'should only find hashtag' do        
+        hashtag = double
+        allow(Hashtag).to receive(:new).and_return(hashtag)
+        allow(hashtag).to receive(:unique?).and_return(false)
+        allow(Hashtag).to receive(:find_by_word)
+        
+        expect(hashtag).not_to receive(:save)
+       
+        Hashtag.save_or_find("ootd")
+      end
+    end
+  end
+
   describe '#find_by_id' do
     context 'when find non existent object' do
       it 'should return nil' do

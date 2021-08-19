@@ -192,18 +192,15 @@ describe Post do
           user: user,
           attachment:  "../upload/post123.jpg"
         })
-
+        
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-
-        allow(post).to receive(:extract_hashtag).and_return(["#ootd"])
-   
-        stub_query ="INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (1,1)"
+        
         hashtag = double
         allow(hashtag).to receive(:id).and_return(1)
-
         allow(Hashtag).to receive(:save_or_find).with('#ootd').and_return(hashtag)
         
+        stub_query ="INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (1,1)"
         expect(stub_client).to receive(:query).with(stub_query)
         allow(stub_client).to receive(:close)
 
