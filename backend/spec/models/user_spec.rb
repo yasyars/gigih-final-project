@@ -273,4 +273,30 @@ describe User do
     end
   end
 
+  describe '#to_hash' do
+    context 'when initialized with valid object' do
+      it 'should return expected map' do
+        username_str = "nana"
+        email_str = "nana@gmail.com"
+        bio_str = "its a bio"
+        user = User.new({
+          id: 1,
+          username: username_str,
+          email: email_str,
+          bio: bio_str,
+        })
+
+        user_hash = user.to_hash
+        expected_hash = {
+          'id' => 1,
+          'username' => username_str,
+          'email' => email_str,
+          'bio' => bio_str
+        }
+        
+        expect(user_hash).to eq(expected_hash)
+      end
+    end
+  end
+
 end
