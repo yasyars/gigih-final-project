@@ -1,22 +1,14 @@
 require 'sinatra'
 require 'json'
-require_relative './models/hashtag'
+require_relative './controllers/user_controller'
 
 get '/' do
-  Hashtag.save_or_find('#helloworld')
-  Hashtag.find_by_id(1).to_json
-end
-
-def pesan 
-  message = {
-    'message' => "hi"
-  }
-  message.to_json
+  Hashtag.save_or_find('#helloworld').to_hash.to_json
 end
 
 post '/user' do
-  #params user
-  
+  controller = UserController.new
+  controller.register(params)
 end
 
 post '/post' do
