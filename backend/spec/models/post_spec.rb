@@ -131,7 +131,7 @@ describe Post do
         })
 
         allow(user).to receive(:id).and_return(1)
-        stub_query ="INSERT INTO posts (content,user_id,attachment) VALUES (#{content_str},#{user.id},#{attachment_str}"
+        stub_query ="INSERT INTO posts (content, user_id, attachment) VALUES (#{content_str}, #{user.id}, #{attachment_str}"
   
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
@@ -155,7 +155,7 @@ describe Post do
         })
 
         allow(user).to receive(:id).and_return(1)
-        stub_query ="INSERT INTO posts (content,user_id,attachment) VALUES (#{content_str},#{user.id},#{attachment_str}"
+        stub_query ="INSERT INTO posts (content, user_id, attachment) VALUES (#{content_str}, #{user.id}, #{attachment_str}"
   
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
@@ -171,14 +171,43 @@ describe Post do
     context 'when save invalid object' do
       it 'should fail to save object' do
         user = double
-        attachment_str = "../upload/post123.jpg"
         post = Post.new({
           content: " ",
           user: user,
-          attachment: attachment_str
+          attachment: "../upload/post123.jpg"
         })
 
         expect{post.save}.to raise_error(RuntimeError,"Invalid Post")
+      end
+    end
+  end
+
+  describe '#save_with_hashtags' do
+    context 'when save post with a hashtag' do
+      it 'should sucessfully insert posts with hashtags' do
+        user = double
+        post = Post.new({
+          id: 1,
+          content: "#ootd",
+          user: user,
+          attachment:  "../upload/post123.jpg"
+        })
+
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+
+        allow(post).to receive(:extract_hashtag).and_return(["#ootd"])
+   
+        stub_query ="INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (1,1)"
+        hashtag = double
+        allow(hashtag).to receive(:id).and_return(1)
+
+        allow(Hashtag).to receive(:save_or_find).with('#ootd').and_return(hashtag)
+        
+        expect(stub_client).to receive(:query).with(stub_query)
+        allow(stub_client).to receive(:close)
+
+        post.save_with_hashtags
       end
     end
   end

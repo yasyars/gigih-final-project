@@ -25,7 +25,7 @@ class Post
   def save
     raise "Invalid Post" unless valid?
     client = create_db_client
-    query = "INSERT INTO posts (content,user_id,attachment) VALUES (#{@content},#{@user.id},#{@attachment}"
+    query = "INSERT INTO posts (content, user_id, attachment) VALUES (#{@content}, #{@user.id}, #{@attachment}"
     client.query(query)
     client.close
     @id = client.last_id
@@ -36,9 +36,7 @@ class Post
     client = create_db_client
     hashtags = extract_hashtag
     hashtags.each do |word|
-      hashtag = Hashtag.new({word: word})
-      hashtag.save if hashtag.unique?
-      hashtag = Hashtag.find_by_word(word)
+      hashtag = Hashtag.save_or_find(word)
       query = "INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (#{@id},#{hashtag.id})"
       client.query(query)
     end
