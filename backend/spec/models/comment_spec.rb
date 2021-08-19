@@ -311,17 +311,30 @@ describe Comment do
   describe '#to_hash' do
     context 'when initialized with valid object' do
       it 'should return expected map' do
-        hashtag = Hashtag.new({
+        user = double
+        post = double
+        allow(user).to receive(:to_hash).and_return({})
+        allow(post).to receive(:to_hash).and_return({})
+
+        comment = Comment.new({
           id: 1,
-          word: "#haha"
+          content: "#haha hahaha",
+          user: user,
+          post: post,
+          attachment: "data/asset/file.png"
         })
 
+        comment_hash = comment.to_hash
         expected_hash = {
           'id' => 1,
-          'word' => "#haha"
+          'content' => "#haha hahaha",
+          'user' => {},
+          'post' => {},
+          'attachment' => "data/asset/file.png",
+          'timestamp' => nil
         }
-
-        expect(hashtag.to_hash).to eq(expected_hash)
+        
+        expect(comment_hash).to eq(expected_hash)
       end
     end
   end

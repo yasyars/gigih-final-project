@@ -256,5 +256,23 @@ describe Hashtag do
       end
     end
   end
+
+  describe '#to_hash' do
+    context 'when initialized with valid object' do
+      it 'should return expected map' do
+        hashtag = Hashtag.new({
+          id: 1,
+          word: "#haha"
+        })
+
+        expected_hash = {
+          'id' => 1,
+          'word' => "#haha"
+        }
+
+        expect(hashtag.to_hash).to eq(expected_hash)
+      end
+    end
+  end
   
 end

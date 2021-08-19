@@ -8,7 +8,11 @@ class Comment < Post
     @post = param[:post]
   end
 
-   def save
+  def valid?
+    super && !@post.nil?
+  end
+
+  def save
     raise "Invalid Comment" unless valid?
     client = create_db_client
     query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES (#{@content}, #{@user.id}, #{@post.id}, #{@attachment}"
@@ -69,6 +73,18 @@ class Comment < Post
       comments.push(comment)
     end
     comments
+  end
+
+  def to_hash
+    raise "Invalid Comment" unless valid?
+    {
+      'id' => @id,
+      'content' => @content,
+      'user' => @user.to_hash,
+      'post' => @post.to_hash,
+      'attachment' => @attachment,
+      'timestamp' => @timestamp
+    }
   end
 
 end
