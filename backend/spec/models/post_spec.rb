@@ -276,4 +276,35 @@ describe Post do
       end
     end
   end
+
+    describe '#to_hash' do
+    context 'when initialized with valid object' do
+      it 'should return expected map' do
+        user = double
+        allow(user).to receive(:to_hash).and_return({})
+        content_str = "#haha hahaha"
+        attachment_str = "data/asset/file.png"
+        timestamp_str = "2021-08-08 01:38:00"
+        post = Post.new({
+          id: 1,
+          content: content_str,
+          user: user,
+          attachment: attachment_str,
+          timestamp: timestamp_str
+        })
+
+        post_hash = post.to_hash
+        expected_hash = {
+          'id' => 1,
+          'content' => content_str,
+          'user' => {},
+          'attachment' => attachment_str,
+          'timestamp' => timestamp_str
+        }
+        
+        expect(post_hash).to eq(expected_hash)
+      end
+    end
+  end
+
 end

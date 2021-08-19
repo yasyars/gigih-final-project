@@ -83,5 +83,16 @@ class Post
     posts
   end
 
+  def to_hash
+    raise "Invalid Comment" unless valid?
+    {
+      'id' => @id,
+      'content' => @content,
+      'user' => @user.to_hash,
+      'attachment' => @attachment,
+      'timestamp' => @timestamp
+    }
+  end
+
 
 end
