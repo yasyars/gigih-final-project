@@ -1,5 +1,7 @@
 require_relative '../../db/db_connector'
 require_relative '../../models/post'
+require_relative '../../models/hashtag'
+
 
 describe Post do
   before [:each] do
@@ -119,65 +121,49 @@ describe Post do
   end
 
   describe '#save' do
-    context 'when save with no hashtag' do
-      it 'should succesfully save object' do
-        user = double
-        content_str = "Hai semuanya, bagus gak pakaianku?"
-        attachment_str = "../upload/post123.jpg"
-        post = Post.new({
-          content: content_str,
-          user: user,
-          attachment: attachment_str
+    describe '#save' do
+      before(:each) do
+        @user = double
+        @content_str = "Hai semuanya, bagus gak pakaianku?"
+        @attachment_str = "../upload/post123.jpg"
+        @post = Post.new({
+          content: @content_str,
+          user: @user,
+          attachment: @attachment_str
         })
-
-        allow(user).to receive(:id).and_return(1)
-        stub_query ="INSERT INTO posts (content, user_id, attachment) VALUES (#{content_str}, #{user.id}, #{attachment_str}"
-  
-        stub_client = double
-        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        expect(stub_client).to receive(:query).with(stub_query)
-        allow(stub_client).to receive(:last_id).and_return(1)
-        allow(stub_client).to receive(:close)
-
-        post.save
+        allow(@user).to receive(:id).and_return(1)
+        @stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(@stub_client)
+        allow(@stub_client).to receive(:close)
+        @stub_query = "INSERT INTO posts (content, user_id, attachment) VALUES (#{@content_str}, #{@user.id}, #{@attachment_str}"
+        allow(@stub_client).to receive(:last_id).and_return(1)
       end
-    end
 
-    context 'when save with hashtag' do
-      it 'should succesfully save object' do
-        user = double
-        content_str = "Hai semuanya, bagus gak pakaianku? #ootd"
-        attachment_str = "../upload/post123.jpg"
-        post = Post.new({
-          content: content_str,
-          user: user,
-          attachment: attachment_str
-        })
-
-        allow(user).to receive(:id).and_return(1)
-        stub_query ="INSERT INTO posts (content, user_id, attachment) VALUES (#{content_str}, #{user.id}, #{attachment_str}"
-  
-        stub_client = double
-        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        expect(stub_client).to receive(:query).with(stub_query)
-        allow(stub_client).to receive(:last_id).and_return(1)
-        allow(post).to receive(:save_with_hashtags)
-        allow(stub_client).to receive(:close)
-
-        post.save
+      context 'when save with no hashtag' do
+        it 'should succesfully save object' do   
+          expect(@stub_client).to receive(:query).with(@stub_query)
+          @post.save
+        end
       end
-    end
 
-    context 'when save invalid object' do
-      it 'should fail to save object' do
-        user = double
-        post = Post.new({
-          content: " ",
-          user: user,
-          attachment: "../upload/post123.jpg"
-        })
+      context 'when save with hashtag' do
+        it 'should succesfully save object' do
+          expect(@stub_client).to receive(:query).with(@stub_query)
+          expect(@post).to receive(:save_with_hashtags)
+          @post.save
+        end
+      end
 
-        expect{post.save}.to raise_error(RuntimeError,"Invalid Post")
+      context 'when save invalid object' do
+        it 'should fail to save object' do
+          post = Post.new({
+            content: " ",
+            user: @user,
+            attachment: @attachment_str
+          })
+
+          expect{post.save}.to raise_error(RuntimeError,"Invalid Post")
+        end
       end
     end
   end

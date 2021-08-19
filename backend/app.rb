@@ -1,16 +1,21 @@
 require 'sinatra'
 require 'json'
+require_relative './models/hashtag'
 
 get '/' do
-  hello = {
-    'message' => "hello world"
-  }
+  Hashtag.find_by_id(1).to_json
+end
 
-  hello.to_json
+def pesan 
+  message = {
+    'message' => "hi"
+  }
+  message.to_json
 end
 
 post '/user' do
   #params user
+  
 end
 
 post '/post' do

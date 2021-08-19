@@ -5,7 +5,7 @@ class Comment < Post
 
   def initialize(param)
     super(param)
-    @user = param[:user]
+    @post = param[:post]
   end
 
    def save
