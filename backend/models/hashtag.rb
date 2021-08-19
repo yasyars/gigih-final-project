@@ -10,13 +10,6 @@ class Hashtag
     @posts = param[:posts] ? param[:posts] : []
   end
 
-  def to_hash
-    {
-      'id' => @id,
-      'word' => @word
-    }
-  end
-
   def valid?
     word_pattern = /^#\S+$/
     return !@word.nil? && @word.gsub(/\s+/, "")!="" && !!(@word =~ word_pattern)
@@ -110,5 +103,13 @@ class Hashtag
       hashtags.push(hashtag)
     end
     hashtags
+  end
+
+  def to_hash
+    raise "Invalid Hashtag" unless valid?
+    {
+      'id' => @id,
+      'word' => @word
+    }
   end
 end
