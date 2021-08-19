@@ -49,6 +49,20 @@ class Hashtag
     hashtag
   end
 
+  def self.find_by_word(word)
+    client = create_db_client
+    query = "SELECT * FROM hashtags WHERE word = #{word}"
+    raw_data = client.query(query)
+    return nil if raw_data.count == 0
+
+    data = raw_data.first
+    hashtag = Hashtag.new({
+      id: data['id'],
+      word: data['word']
+    })
+    hashtag
+  end
+
   def self.find_trending
     client = create_db_client
     query = "SELECT hashtags.id, hashtags.word

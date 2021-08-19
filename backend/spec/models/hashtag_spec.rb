@@ -141,6 +141,38 @@ describe Hashtag do
     end
   end
 
+  describe '#find_by_word' do
+    context 'when find non existent object' do
+      it 'should return nil' do
+        hashtag = Hashtag.find_by_word(1)
+        expect(hashtag).to be_nil
+      end
+    end
+
+    context 'when find exist object' do
+      it 'should return right object' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        
+        word_str = '#generasigigih'
+        stub_query ="SELECT * FROM hashtags WHERE word = #{word_str}"
+        
+        stub_raw_data= [{
+          'id' => 1,
+          'word'  => word_str
+        }]
+
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
+        allow(stub_client).to receive(:close)
+
+        hashtag = Hashtag.find_by_word(word_str)
+
+        expect(hashtag.id).to eq(1)
+        expect(hashtag.word).to eq('#generasigigih')
+      end
+    end
+  end
+
   describe '#find_trending' do
     context 'when find non existent object' do
       it 'should return empty array' do
