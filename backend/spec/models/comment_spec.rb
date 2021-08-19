@@ -136,6 +136,79 @@ describe Comment do
     end
   end
 
+  describe '#save' do
+    before(:each) do
+      @user = double
+      @content_str = "Hai semuanya, bagus gak pakaianku?"
+      @attachment_str = "../upload/post123.jpg"
+      @post = Post.new({
+        content: @content_str,
+        user: @user,
+        attachment: @attachment_str
+      })
+      allow(@user).to receive(:id).and_return(1)
+      @stub_client = double
+      allow(Mysql2::Client).to receive(:new).and_return(@stub_client)
+      allow(@stub_client).to receive(:close)
+      @stub_query = "INSERT INTO posts (content, user_id, attachment) VALUES (#{@content_str}, #{@user.id}, #{@attachment_str}"
+      allow(@stub_client).to receive(:last_id).and_return(1)
+    end
+
+    context 'when save with no hashtag' do
+      it 'should succesfully save object' do   
+        expect(@stub_client).to receive(:query).with(@stub_query)
+        @post.save
+      end
+    end
+
+    context 'when save with hashtag' do
+      it 'should succesfully save object' do
+        expect(@stub_client).to receive(:query).with(@stub_query)
+        expect(@post).to receive(:save_with_hashtags)
+        @post.save
+      end
+    end
+
+    context 'when save invalid object' do
+      it 'should fail to save object' do
+        post = Post.new({
+          content: " ",
+          user: @user,
+          attachment: @attachment_str
+        })
+
+        expect{post.save}.to raise_error(RuntimeError,"Invalid Post")
+      end
+    end
+  end
+
+  describe '#save_with_hashtags' do
+    context 'when save post with a hashtag' do
+      it 'should sucessfully insert posts with hashtags' do
+        user = double
+        post = Post.new({
+          id: 1,
+          content: "#ootd",
+          user: user,
+          attachment:  "../upload/post123.jpg"
+        })
+        
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        
+        hashtag = double
+        allow(hashtag).to receive(:id).and_return(1)
+        allow(Hashtag).to receive(:save_or_find).with('#ootd').and_return(hashtag)
+        
+        stub_query ="INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (1,1)"
+        expect(stub_client).to receive(:query).with(stub_query)
+        allow(stub_client).to receive(:close)
+
+        post.save_with_hashtags
+      end
+    end
+  end
+
   describe '#find_by_hashtag' do
     context 'when there is no comment that matches' do
       it 'should return empty array' do
