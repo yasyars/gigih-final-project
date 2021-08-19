@@ -86,7 +86,7 @@ class Post
   def to_hash
     raise "Invalid Comment" unless valid?
     {
-      'id' => @id,
+      'id' => @id.to_i,
       'content' => @content,
       'user' => @user.to_hash,
       'attachment' => @attachment,

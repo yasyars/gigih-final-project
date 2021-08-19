@@ -28,7 +28,7 @@ class Hashtag
     raise "Invalid Hashtag" unless valid?
     raise "Duplicate Data" unless unique?
     client = create_db_client
-    query = "INSERT INTO hashtags (word) VALUES ('#{@word}')"
+    query = "INSERT INTO hashtags (word) VALUES ('#{@word.downcase}')"
     client.query(query)
     client.close
   end
@@ -58,7 +58,7 @@ class Hashtag
 
   def self.find_by_word(word)
     client = create_db_client
-    query = "SELECT * FROM hashtags WHERE word = #{word}"
+    query = "SELECT * FROM hashtags WHERE word = '#{word.downcase}'"
     raw_data = client.query(query)
     return nil if raw_data.count == 0
 
@@ -97,8 +97,8 @@ class Hashtag
     hashtags = Array.new
     raw_data.each do |data|
       hashtag = Hashtag.new({
-        id: data['id'],
-        word: data['word']
+        id: data['id'].to_i,
+        word: data['word'].downcase
       })
       hashtags.push(hashtag)
     end
@@ -109,7 +109,7 @@ class Hashtag
     raise "Invalid Hashtag" unless valid?
     {
       'id' => @id,
-      'word' => @word
+      'word' => @word.downcase
     }
   end
 end

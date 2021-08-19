@@ -3,6 +3,7 @@ require 'json'
 require_relative './models/hashtag'
 
 get '/' do
+  Hashtag.save_or_find('#helloworld')
   Hashtag.find_by_id(1).to_json
 end
 

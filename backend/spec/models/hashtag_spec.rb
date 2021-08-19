@@ -171,7 +171,7 @@ describe Hashtag do
   describe '#find_by_word' do
     context 'when find non existent object' do
       it 'should return nil' do
-        hashtag = Hashtag.find_by_word(1)
+        hashtag = Hashtag.find_by_word('#nono')
         expect(hashtag).to be_nil
       end
     end
@@ -182,7 +182,7 @@ describe Hashtag do
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
         
         word_str = '#generasigigih'
-        stub_query ="SELECT * FROM hashtags WHERE word = #{word_str}"
+        stub_query ="SELECT * FROM hashtags WHERE word = '#{word_str}'"
         
         stub_raw_data= [{
           'id' => 1,
