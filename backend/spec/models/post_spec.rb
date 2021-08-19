@@ -63,7 +63,7 @@ describe Post do
       end
     end
   end
-
+  
   describe '#extract_hashtag' do
     context 'when initialized with no hashtag' do
       it 'should return empty array' do
@@ -114,6 +114,71 @@ describe Post do
         })
 
         expect(post.extract_hashtag).to eq(['#ootd','#sunday'])
+      end
+    end
+  end
+
+  describe '#save' do
+    context 'when save with no hashtag' do
+      it 'should succesfully save object' do
+        user = double
+        content_str = "Hai semuanya, bagus gak pakaianku?"
+        attachment_str = "../upload/post123.jpg"
+        post = Post.new({
+          content: content_str,
+          user: user,
+          attachment: attachment_str
+        })
+
+        allow(user).to receive(:id).and_return(1)
+        stub_query ="INSERT INTO posts (content,user_id,attachment) VALUES (#{content_str},#{user.id},#{attachment_str}"
+  
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        expect(stub_client).to receive(:query).with(stub_query)
+        allow(stub_client).to receive(:last_id).and_return(1)
+        allow(stub_client).to receive(:close)
+
+        post.save
+      end
+    end
+
+    context 'when save with hashtag' do
+      it 'should succesfully save object' do
+        user = double
+        content_str = "Hai semuanya, bagus gak pakaianku? #ootd"
+        attachment_str = "../upload/post123.jpg"
+        post = Post.new({
+          content: content_str,
+          user: user,
+          attachment: attachment_str
+        })
+
+        allow(user).to receive(:id).and_return(1)
+        stub_query ="INSERT INTO posts (content,user_id,attachment) VALUES (#{content_str},#{user.id},#{attachment_str}"
+  
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        expect(stub_client).to receive(:query).with(stub_query)
+        allow(stub_client).to receive(:last_id).and_return(1)
+        allow(post).to receive(:save_with_hashtags)
+        allow(stub_client).to receive(:close)
+
+        post.save
+      end
+    end
+
+    context 'when save invalid object' do
+      it 'should fail to save object' do
+        user = double
+        attachment_str = "../upload/post123.jpg"
+        post = Post.new({
+          content: " ",
+          user: user,
+          attachment: attachment_str
+        })
+
+        expect{post.save}.to raise_error(RuntimeError,"Invalid Post")
       end
     end
   end

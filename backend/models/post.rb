@@ -2,7 +2,7 @@ require_relative '../db/db_connector'
 require_relative 'user'
 class Post 
   attr_reader :id, :content, :user, :attachment, :timestamp, :hashtags
-
+  
   def initialize(param)
     @id = param[:id] ? param[:id] : nil
     @content = param[:content]
@@ -20,6 +20,29 @@ class Post
     hashtag_pattern = /#\S+/
     hashtags = @content.downcase.scan(hashtag_pattern)
     hashtags.uniq
+  end
+
+  def save
+    raise "Invalid Post" unless valid?
+    client = create_db_client
+    query = "INSERT INTO posts (content,user_id,attachment) VALUES (#{@content},#{@user.id},#{@attachment}"
+    client.query(query)
+    client.close
+    @id = client.last_id
+    save_with_hashtags
+  end
+
+  def save_with_hashtags
+    client = create_db_client
+    hashtags = extract_hashtag
+    hashtags.each do |word|
+      hashtag = Hashtag.new({word: word})
+      hashtag.save if hashtag.unique?
+      hashtag = Hashtag.find_by_word(word)
+      query = "INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (#{@id},#{hashtag.id})"
+      client.query(query)
+    end
+    client.close
   end
 
   def self.find_by_id(id)

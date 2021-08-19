@@ -25,8 +25,8 @@ class Hashtag
   end
 
   def save
-    raise "Invalid Hashtag" if !valid?
-    raise "Duplicate Data" if !unique?
+    raise "Invalid Hashtag" unless valid?
+    raise "Duplicate Data" unless unique?
     client = create_db_client
     query = "INSERT INTO hashtags (word) VALUES ('#{@word}')"
     client.query(query)
