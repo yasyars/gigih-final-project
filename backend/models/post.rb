@@ -23,7 +23,7 @@ class Post
   end
 
   def save
-    raise "Invalid Post" unless valid?
+    raise ArgumentError.new("Invalid Post") unless valid?
     client = create_db_client
     query = "INSERT INTO posts (content, user_id, attachment) VALUES (#{@content}, #{@user.id}, #{@attachment}"
     client.query(query)
@@ -84,7 +84,7 @@ class Post
   end
 
   def to_hash
-    raise "Invalid Comment" unless valid?
+    raise ArgumentError.new("Invalid Comment") unless valid?
     {
       'id' => @id.to_i,
       'content' => @content,

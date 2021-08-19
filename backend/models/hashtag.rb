@@ -25,8 +25,8 @@ class Hashtag
   end
 
   def save
-    raise "Invalid Hashtag" unless valid?
-    raise "Duplicate Data" unless unique?
+    raise ArgumentError.new("Invalid Hashtag") unless valid?
+    raise ArgumentError.new("Duplicate Data") unless unique?
     client = create_db_client
     query = "INSERT INTO hashtags (word) VALUES ('#{@word.downcase}')"
     client.query(query)
@@ -106,7 +106,7 @@ class Hashtag
   end
 
   def to_hash
-    raise "Invalid Hashtag" unless valid?
+    raise ArgumentError.new("Invalid Hashtag") unless valid?
     {
       'id' => @id,
       'word' => @word.downcase

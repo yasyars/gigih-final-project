@@ -183,7 +183,7 @@ describe Comment do
           attachment: @attachment_str
         })
 
-        expect{comment.save}.to raise_error(RuntimeError,"Invalid Comment")
+        expect{comment.save}.to raise_error(ArgumentError,"Invalid Comment")
       end
     end
   end

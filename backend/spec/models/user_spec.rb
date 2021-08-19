@@ -133,7 +133,7 @@ describe User do
 
         user.save
 
-        expect{user.save}.to raise_error(RuntimeError, "Duplicate Username")
+        expect{user.save}.to raise_error(ArgumentError, "Duplicate Username")
       end
     end
 
@@ -153,7 +153,7 @@ describe User do
           bio: 'A ruby lover || a musician'
         })
 
-        expect{user.save}.to raise_error(RuntimeError, "Duplicate Email")
+        expect{user.save}.to raise_error(ArgumentError, "Duplicate Email")
       end
     end
 
@@ -164,7 +164,7 @@ describe User do
           email: 'mery@go.round',
           bio: 'A ruby lover || a musician'
         })
-        expect{user.save}.to raise_error(RuntimeError, "Invalid Username")
+        expect{user.save}.to raise_error(ArgumentError, "Invalid Username")
       end
     end
 
@@ -175,7 +175,7 @@ describe User do
           email: '',
           bio: 'A ruby lover || a musician'
         })
-        expect{user.save}.to raise_error(RuntimeError, "Invalid Email")
+        expect{user.save}.to raise_error(ArgumentError, "Invalid Email")
       end
     end
 

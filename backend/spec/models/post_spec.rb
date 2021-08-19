@@ -162,7 +162,7 @@ describe Post do
             attachment: @attachment_str
           })
 
-          expect{post.save}.to raise_error(RuntimeError,"Invalid Post")
+          expect{post.save}.to raise_error(ArgumentError,"Invalid Post")
         end
       end
     end

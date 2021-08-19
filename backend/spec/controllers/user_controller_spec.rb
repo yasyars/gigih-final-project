@@ -4,9 +4,13 @@ require 'json'
 
 describe UserController do
   before [:each] do
-
-  end
-
+    client = create_db_client
+    client.query("SET FOREIGN_KEY_CHECKS = 0")
+    client.query("TRUNCATE TABLE users")
+    client.query("SET FOREIGN_KEY_CHECKS =1")
+    client.close
+  end  
+  
   describe '#register' do
     context 'when given valid params' do
       it 'should return right response' do

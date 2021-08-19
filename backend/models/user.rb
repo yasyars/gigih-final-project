@@ -41,10 +41,10 @@ class User
   end
 
   def save
-    raise "Invalid Username" unless username_valid?
-    raise "Invalid Email" unless email_valid?
-    raise "Duplicate Username" unless username_unique?
-    raise "Duplicate Email" unless email_unique?
+    raise ArgumentError.new("Invalid Username") unless username_valid?
+    raise ArgumentError.new("Invalid Email") unless email_valid?
+    raise ArgumentError.new("Duplicate Username") unless username_unique?
+    raise ArgumentError.new("Duplicate Email") unless email_unique?
 
     client = create_db_client
     query = "INSERT INTO users (username,email,bio) VALUES ('#{@username}','#{@email}','#{@bio}')"
@@ -95,8 +95,8 @@ class User
   end
 
   def to_hash
-    raise "Invalid Username" unless username_valid?
-    raise "Invalid Email" unless email_valid?
+    raise ArgumentError.new("Invalid Username") unless username_valid?
+    raise ArgumentError.new("Invalid Email") unless email_valid?
     {
       'id' => @id,
       'username' => @username,
