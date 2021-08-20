@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "cb6e92f3-f10c-495d-a3fc-6022947f45e9",
+		"name": "Final Project Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "merygoround",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "mery@go.round",
+							"type": "text"
+						},
+						{
+							"key": "bio",
+							"value": "A ruby lover",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{social_media_service}}/user",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Username",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{social_media_service}}/user/merygoround",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"user",
+						"merygoround"
+					]
+				},
+				"description": "Param body: username\nresponse: user"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "Halo semuanya #morning",
+							"type": "text"
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/Users/yasyars/Documents/Foto/1da859ef0f1f273dfab4e8d37fdc4dcb.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{social_media_service}}/post",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Comment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "Halo semuanya #mariberdendang #ootd",
+							"type": "text"
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/Users/yasyars/Documents/Foto/1da859ef0f1f273dfab4e8d37fdc4dcb.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{social_media_service}}/post/1/comment",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post",
+						"1",
+						"comment"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post By Hashtag",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{social_media_service}}/post?hashtag=%23morning",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post"
+					],
+					"query": [
+						{
+							"key": "hashtag",
+							"value": "%23morning"
+						}
+					]
+				},
+				"description": "note: always use the %23 in the hashtag params. %23 indicates the '#' before the letter. All of hashtags are saved with #<word> template."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Trending Hashtags",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{social_media_service}}/hashtag/trending",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"hashtag",
+						"trending"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
