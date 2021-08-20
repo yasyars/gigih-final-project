@@ -116,5 +116,9 @@ class Post
     }
   end
 
+  def set_domain_attachment(domain)
+    @attachment = domain + "/" + @attachment
+    self
+  end
 
 end

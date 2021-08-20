@@ -33,6 +33,7 @@ describe PostController do
 
         user = double
         allow(User).to receive(:find_by_id).with("1").and_return(user)
+        
         file_stub = double
         allow(FileHandler).to receive(:new).and_return(file_stub)
         allow(file_stub).to receive(:upload).with(params['attachment']).and_return('uploads/data.png')
@@ -52,7 +53,7 @@ describe PostController do
     end
   end
 
-  describe '#get_post_by_hashtag_word' do
+  describe '#get_post_by_hashtag' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = PostController.new
@@ -64,15 +65,19 @@ describe PostController do
           'email' => 'mery@go.round',
           'bio' => 'A ruby lover'
         })
-        allow(Post).to receive(:find_by_hashtag_word).and_return([post])
+
+        posts = [post]
+        allow(Post).to receive(:find_by_hashtag_word).and_return(posts)
+        allow(post).to receive(:set_domain_attachment).with('http://localhost:4567').and_return(posts)
+        allow(posts).to receive(:map).and_return(posts)
         allow(post).to receive(:to_hash).and_return({
           'id' =>1,
           'content' => "Hai semuanya #ootd",
           'user' => user.to_hash,
           'attachment' => 'data/file.png'
-        })
+       })
 
-        response = controller.get_post_by_hashtag('#ootd')
+        response = controller.get_post_by_hashtag('#ootd','http://localhost:4567')
         expected_json = response ={
           'status' => PostView::MESSAGE[:status_ok],
           'message' => PostView::MESSAGE[:get_success] ,

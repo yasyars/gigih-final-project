@@ -10,10 +10,11 @@ class FileHandler
   end
 
   def generate_new_name_if_exist(file)
-    path_file = PATH + file[:filename]
+    file_name = file[:filename].gsub(/\s+/, "")
+    path_file = PATH + file_name
     i = 1
     while exist?(path_file)
-      path_file = PATH + "#{i}-" + file[:filename]
+      path_file = PATH + "#{i}-" + file_name
       i+=1
     end
     return path_file

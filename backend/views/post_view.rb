@@ -23,7 +23,8 @@ class PostView
       'status' => MESSAGE[:status_ok],
       'message' => MESSAGE[:get_success],
       'data' => post.to_hash
-    }.to_json
+    }
+    response.to_json
   end
 
   def post_array(posts)

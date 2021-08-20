@@ -5,11 +5,7 @@ require_relative './controllers/post_controller'
 require_relative './controllers/comment_controller'
 require_relative './controllers/hashtag_controller'
 
-# set :show_exceptions, false
-
-get '/' do
-  Hashtag.save_or_find('#helloworld').to_hash.to_json
-end
+set :show_exceptions, false
 
 error ArgumentError do
   status 400
@@ -39,7 +35,7 @@ get '/post' do
   word = params['hashtag'] ? params['hashtag'] : nil
   controller = PostController.new
   status 200
-  controller.get_post(word)
+  controller.get_post(word, request.base_url)
 end
 
 get '/hashtag/trending' do
@@ -52,6 +48,10 @@ post '/post/:post_id/comment' do
  controller = CommentController.new
  status 200
  controller.add_comment(params)
+end
+
+get '/uploads/:file_name' do
+  send_file 'uploads/'+ params['file_name']
 end
 
 

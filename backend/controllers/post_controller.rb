@@ -23,18 +23,19 @@ class PostController
     @response.create_success
   end
 
-  def get_post(word)
+  def get_post(word, domain)
     if word.nil?
       posts = Post.find_all
+      posts = posts.map {|post| post.set_domain_attachment(domain)}
       @response.post_array(posts)
     else
-      get_post_by_hashtag(word)
+      get_post_by_hashtag(word,domain)
     end
   end
 
-  def get_post_by_hashtag(word)
-    response = PostView.new
+  def get_post_by_hashtag(word, domain)
     posts = Post.find_by_hashtag_word(word)
+    posts = posts.map {|post| post.set_domain_attachment(domain)}
     @response.post_array(posts)
   end
 end
