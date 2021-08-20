@@ -2,6 +2,8 @@ require 'sinatra'
 require 'json'
 require_relative './controllers/user_controller'
 require_relative './controllers/post_controller'
+require_relative './controllers/hashtag_controller'
+
 
 set :show_exceptions, false
 
@@ -40,12 +42,16 @@ get '/post' do
   controller.get_post(word)
 end
 
-get '/hashtag' do
-  #params query trending true
+get '/hashtag/trending' do
+  controller = HashtagController.new
+  status 200
+  controller.get_trending
 end
 
 post '/post/:post_id/comment' do
-#params comment
+ controller = CommentController.new
+ status 200
+ controller.add_comment(params['post_id'])
 end
 
 
