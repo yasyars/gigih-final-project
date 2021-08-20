@@ -39,4 +39,29 @@ describe PostController do
     end
   end
 
+  describe '#get_post_with_hashtag' do
+    context 'when given valid params' do
+      it 'should return right response' do
+        controller = PostController.new
+        params = {
+          'hashtag' => '#mar',
+          'attachment' => 'data/file.png'
+        }
+
+        user = double
+        allow(User).to receive(:find_by_id).with(1).and_return(user)
+        post = double
+        allow(Post).to receive(:new).and_return(post)
+        allow(post).to receive(:save)
+        
+        response = controller.add_post(params)
+        expected_json = {
+          'message' => PostView::MESSAGE[:create_success]
+        }.to_json
+
+        expect(response).to eq(expected_json)
+      end
+    end
+  end
+
 end

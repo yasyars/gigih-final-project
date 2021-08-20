@@ -3,8 +3,7 @@ require 'json'
 require_relative './controllers/user_controller'
 require_relative './controllers/post_controller'
 
-
-# set :show_exceptions, false
+set :show_exceptions, false
 
 get '/' do
   Hashtag.save_or_find('#helloworld').to_hash.to_json
@@ -12,8 +11,8 @@ end
 
 error ArgumentError do
   status 400
-  {'error' => true,
-    'message' => env['sinatra.error'].message }.to_json 
+  {'status' => 'error',
+   'message' =>  env['sinatra.error'].message }.to_json 
 end
 
 post '/user' do
@@ -35,7 +34,7 @@ post '/post' do
 end
 
 get '/post' do
-  #params query hashtag
+  
 end
 
 get '/hashtag' do

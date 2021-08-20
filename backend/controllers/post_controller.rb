@@ -4,7 +4,7 @@ require_relative '../views/post_view'
 
 class PostController
   def add_post(params)
-    user = User.find_by_id(params['user_id'].to_i)
+    user = User.find_by_id(params['user_id'])
     post = Post.new({
       content: params['content'],
       user: user,
