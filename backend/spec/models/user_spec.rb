@@ -234,6 +234,37 @@ describe User do
       end
     end
   end
+
+  describe '#find_by_username' do
+    context 'when find non existent object' do
+      it 'should return nil' do
+        user = User.find_by_username('merygoround')
+        expect(user).to be_nil
+      end
+    end
+
+    context 'when find exist object' do
+      it 'should return right object' do
+        stub_client = double
+        allow(Mysql2::Client).to receive(:new).and_return(stub_client)
+        stub_query ="SELECT * FROM users WHERE username = 'merygoround'"
+        
+        stub_raw_data= [{
+            'id' => 1,
+            'username'  => 'merygoround',
+            'email'  => 'mery@go.round',
+            'bio'  => 'A coder'
+        }]
+
+        allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
+        allow(stub_client).to receive(:close)
+
+        user = User.find_by_username('merygoround')
+
+        expect(user.to_hash).to eq(stub_raw_data.first)
+      end
+    end
+  end
   
   describe '#find_all' do
     context 'when no user at all' do

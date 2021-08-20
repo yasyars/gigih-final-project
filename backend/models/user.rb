@@ -72,6 +72,26 @@ class User
     user
   end
 
+  def self.find_by_username(username)
+    client = create_db_client
+    query = "SELECT * FROM users WHERE username = '#{username}'"
+    raw_data = client.query(query)
+    client.close
+
+    if raw_data.count == 0
+      return nil
+    end
+
+    data = raw_data.first
+    user = User.new({
+      id: data['id'],
+      username: data['username'],
+      email: data['email'],
+      bio: data['bio']
+    })
+    user
+  end
+
   def self.find_all
     client = create_db_client
     query = "SELECT * FROM users"
