@@ -31,6 +31,7 @@ describe PostController do
         
         response = controller.add_post(params)
         expected_json = {
+          'status' => PostView::MESSAGE[:status_ok],
           'message' => PostView::MESSAGE[:create_success]
         }.to_json
 
@@ -39,26 +40,31 @@ describe PostController do
     end
   end
 
-  describe '#get_post_by_hashtag' do
+  describe '#get_post_by_hashtag_word' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = PostController.new
         post = double
         user = double
-        allow(Post).to receive(:find_by_hashtag).and_return(post)
+        allow(user).to receive(:to_hash).and_return({
+          'id' => 1,
+          'username' => 'merygorund',
+          'email' => 'mery@go.round',
+          'bio' => 'A ruby lover'
+        })
+        allow(Post).to receive(:find_by_hashtag_word).and_return([post])
         allow(post).to receive(:to_hash).and_return({
           'id' =>1,
           'content' => "Hai semuanya #ootd",
-          'user' => @user.to_hash,
-          'attachment' => @attachment,
-          'timestamp' => @timestamp
+          'user' => user.to_hash,
+          'attachment' => 'data/file.png'
         })
 
         response = controller.get_post_by_hashtag('#ootd')
-        expected_json = {
+        expected_json = response ={
           'status' => PostView::MESSAGE[:status_ok],
-          'message' => PostView::MESSAGE[:get_success],
-          'data' => post.to_hash
+          'message' => PostView::MESSAGE[:get_success] ,
+          'data' => [post.to_hash]
         }.to_json
 
         expect(response).to eq(expected_json)
