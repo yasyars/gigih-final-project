@@ -61,7 +61,7 @@ class Post
         attachment: data['attachment'],
         timestamp: data['timestamp']
       })
-      
+
       posts.push(post)
     end
     posts
@@ -87,9 +87,9 @@ class Post
     posts
   end
 
-  def self.find_by_hashtag(hashtag)
+  def self.find_by_hashtag_word(word)
     client = create_db_client
-    query = "SELECT * FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id WHERE hashtag_id = #{hashtag.id}"
+    query = "SELECT * FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
     raw_data = client.query(query)
     client.close
     return [] if raw_data.count == 0 

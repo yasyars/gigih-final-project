@@ -16,12 +16,24 @@ class PostView
     }.to_json
   end
 
-  def post_data(user)
-    {
+  def post_data(post)
+
+    return empty_post if post.nil?
+    response = {
       'status' => MESSAGE[:status_ok],
       'message' => MESSAGE[:get_success],
       'data' => post.to_hash
     }.to_json
+  end
+
+  def post_array(posts)
+    response ={
+      'status' => MESSAGE[:status_ok],
+      'message' => MESSAGE[:get_success] ,
+      'data' => posts.map {|post| post.to_hash}
+    }
+    response['message'] = MESSAGE[:get_not_found] if posts.empty? 
+    response.to_json
   end
 
   def empty_post

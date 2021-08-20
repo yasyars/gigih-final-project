@@ -39,24 +39,26 @@ describe PostController do
     end
   end
 
-  describe '#get_post_with_hashtag' do
+  describe '#get_post_by_hashtag' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = PostController.new
-        params = {
-          'hashtag' => '#mar',
-          'attachment' => 'data/file.png'
-        }
-
-        user = double
-        allow(User).to receive(:find_by_id).with(1).and_return(user)
         post = double
-        allow(Post).to receive(:new).and_return(post)
-        allow(post).to receive(:save)
-        
-        response = controller.add_post(params)
+        user = double
+        allow(Post).to receive(:find_by_hashtag).and_return(post)
+        allow(post).to receive(:to_hash).and_return({
+          'id' =>1,
+          'content' => "Hai semuanya #ootd",
+          'user' => @user.to_hash,
+          'attachment' => @attachment,
+          'timestamp' => @timestamp
+        })
+
+        response = controller.get_post_by_hashtag('#ootd')
         expected_json = {
-          'message' => PostView::MESSAGE[:create_success]
+          'status' => PostView::MESSAGE[:status_ok],
+          'message' => PostView::MESSAGE[:get_success],
+          'data' => post.to_hash
         }.to_json
 
         expect(response).to eq(expected_json)
