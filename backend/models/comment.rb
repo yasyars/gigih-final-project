@@ -15,10 +15,11 @@ class Comment < Post
   def save
     raise ArgumentError.new("Invalid Comment") unless valid?
     client = create_db_client
-    query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES (#{@content}, #{@user.id}, #{@post.id}, #{@attachment}"
+    query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES ('#{@content}', #{@user.id}, #{@post.id}, '#{@attachment}')"
+    puts query
     client.query(query)
-    client.close
     @id = client.last_id
+    client.close
     save_with_hashtags
   end
 
