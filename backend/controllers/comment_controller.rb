@@ -31,7 +31,7 @@ class CommentController
     end
   end
 
-  def get_post_by_hashtag(word)
+  def get_comment_by_hashtag(word)
     response = CommentView.new
     comments = Comment.find_by_hashtag_word(word)
     @response.comment_array(comments)
