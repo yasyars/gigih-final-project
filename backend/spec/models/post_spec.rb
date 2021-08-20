@@ -238,24 +238,18 @@ describe Post do
     context 'when there is no post that matches' do
       it 'should return empty array' do
         res = Post.find_by_id(1)
-        expect(res).to eq([])
+        expect(res).to be_nil
       end
     end
 
     context 'when there is posts that match' do
-      it 'should return array with members' do
+      it 'should return right object' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
         stub_query = "SELECT * FROM posts WHERE id = 1"
         stub_raw_data_post = [{
           'id' => 1,
           'content' => "#ootd yey",
-          'user_id' => 1,
-          'attachment' => nil,
-          'timestamp' => '2021-08-18 01:08:44'
-        },{
-          'id' => 2,
-          'content' => "#ootd asik",
           'user_id' => 1,
           'attachment' => nil,
           'timestamp' => '2021-08-18 01:08:44'
@@ -268,7 +262,10 @@ describe Post do
         allow(stub_client).to receive(:close)
         
         res = Post.find_by_id(1)
-        expect(res.size).to eq(2)
+        expect(res.id).to eq(1)
+        expect(res.content).to eq('#ootd yey')
+        expect(res.attachment).to be_nil
+        expect(res.timestamp).to eq('2021-08-18 01:08:44')
       end
     end
   end
