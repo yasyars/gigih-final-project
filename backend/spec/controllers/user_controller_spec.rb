@@ -1,5 +1,6 @@
 require_relative '../../db/db_connector'
 require_relative '../../controllers/user_controller'
+require_relative '../../views/user_view'
 require 'json'
 
 describe UserController do
@@ -30,6 +31,42 @@ describe UserController do
         }.to_json
 
         expect(response).to eq(expected_json)
+      end
+    end
+  end
+
+  describe '#get_user_by_username' do
+    describe 'when given valid params' do 
+      let(:controller) {UserController.new}
+      let(:params) {{
+        'username' => 'merygoround'
+      }}
+      let(:response) {controller.get_user_by_username(params)}
+      let(:response_map) {JSON.parse(response)}
+
+      context 'when not found' do
+        it 'should return success response with right message' do
+          allow(User).to receive(:find_by_username).with('merygoround').and_return(nil)
+          expected = {
+            'message' => UserView::MESSAGE[:get_not_found],
+            'data'=>nil
+          }.to_json
+          expect(response).to eq(expected)
+        end
+      end
+      context 'when found' do
+        it 'should return success response with right message' do
+          user = double
+          allow(user).to receive(:to_hash).and_return({
+            'id' => 1,
+            'username' => 'merygoround',
+            'email' => 'mery@go.round',
+            'bio' => 'A ruby lover'
+          })
+
+          allow(User).to receive(:find_by_username).with('merygoround').and_return(user)
+          expect(response_map['message']).to eq(UserView::MESSAGE[:get_success])
+        end
       end
     end
   end

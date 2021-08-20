@@ -1,15 +1,15 @@
 require_relative '../models/user'
+require_relative '../helper/view_message'
 require 'json'
 
-MESSAGE = {
-  :create_success => 'User successfully created',
-  :get_success =>'User data retrieved succesfully',
-  :get_not_found => 'User data not found'
-}
-
 class UserView
+
+  MESSAGE= {
+    :get_not_found => "ahahshs"
+  }
+
   def create_success
-    {'message' => MESSAGE[:create_success]}.to_json
+    {'message' => USER_MESSAGE[:create_success]}.to_json
   end
 
   def user_data(user)
