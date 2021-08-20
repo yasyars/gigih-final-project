@@ -1,10 +1,12 @@
 require_relative '../db/db_connector'
 require_relative 'user'
+require_relative 'hashtag'
+
 class Post 
   attr_reader :id, :content, :user, :attachment, :timestamp, :hashtags
   
   def initialize(param)
-    @id = param[:id] ? param[:id] : nil
+    @id = param[:id].to_i ? param[:id] : nil
     @content = param[:content]
     @user = param[:user]
     @attachment = param[:attachment] ? param[:attachment] : nil
@@ -25,10 +27,10 @@ class Post
   def save
     raise ArgumentError.new("Invalid Post") unless valid?
     client = create_db_client
-    query = "INSERT INTO posts (content, user_id, attachment) VALUES (#{@content}, #{@user.id}, #{@attachment}"
+    query = "INSERT INTO posts (content, user_id, attachment) VALUES ('#{@content}', #{@user.id}, '#{@attachment}')"
     client.query(query)
-    client.close
     @id = client.last_id
+    client.close
     save_with_hashtags
   end
 

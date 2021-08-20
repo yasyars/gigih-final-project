@@ -5,7 +5,7 @@ class User
   attr_accessor :posts, :bio
 
   def initialize(param)
-    @id = param[:id] ? param[:id] : nil
+    @id = param[:id].to_i ? param[:id] : nil
     @username = param[:username]
     @email = param[:email]
     @bio = param[:bio] ? param[:bio] : ""

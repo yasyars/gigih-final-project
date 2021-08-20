@@ -23,4 +23,5 @@ class UserController
       response.user_data(user)
     end
   end
+
 end

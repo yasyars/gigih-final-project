@@ -22,4 +22,5 @@ class UserView
     {'message' => MESSAGE[:get_not_found],
       'data' => nil}.to_json
   end
+  
 end

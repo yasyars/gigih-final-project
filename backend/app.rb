@@ -1,8 +1,10 @@
 require 'sinatra'
 require 'json'
 require_relative './controllers/user_controller'
+require_relative './controllers/post_controller'
 
-set :show_exceptions, false
+
+# set :show_exceptions, false
 
 get '/' do
   Hashtag.save_or_find('#helloworld').to_hash.to_json
@@ -27,7 +29,9 @@ get '/user/:username' do
 end
 
 post '/post' do
-  
+  controller = PostController.new
+  status 200
+  controller.add_post(params)
 end
 
 get '/post' do

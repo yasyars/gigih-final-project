@@ -135,7 +135,7 @@ describe Post do
         @stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(@stub_client)
         allow(@stub_client).to receive(:close)
-        @stub_query = "INSERT INTO posts (content, user_id, attachment) VALUES (#{@content_str}, #{@user.id}, #{@attachment_str}"
+        @stub_query = "INSERT INTO posts (content, user_id, attachment) VALUES ('#{@content_str}', #{@user.id}, '#{@attachment_str}')"
         allow(@stub_client).to receive(:last_id).and_return(1)
       end
 

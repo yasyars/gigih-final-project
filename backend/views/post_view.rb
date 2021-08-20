@@ -1,7 +1,7 @@
 require_relative '../models/post'
 require 'json'
 
-class UserView
+class PostView
 
   MESSAGE = {
     :create_success => 'Post successfully created',
