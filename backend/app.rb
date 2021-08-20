@@ -34,7 +34,10 @@ post '/post' do
 end
 
 get '/post' do
-  
+  word = params['hashtag'] ? params['hashtag'] : nil
+  controller = PostController.new
+  status 200
+  controller.get_post(word)
 end
 
 get '/hashtag' do
