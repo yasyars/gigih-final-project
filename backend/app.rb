@@ -27,7 +27,7 @@ get '/user/:username' do
 end
 
 post '/post' do
-  #params post
+  
 end
 
 get '/post' do

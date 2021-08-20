@@ -42,7 +42,6 @@ describe UserController do
         'username' => 'merygoround'
       }}
       let(:response) {controller.get_user_by_username(params)}
-      let(:response_map) {JSON.parse(response)}
 
       context 'when not found' do
         it 'should return success response with right message' do
@@ -65,7 +64,12 @@ describe UserController do
           })
 
           allow(User).to receive(:find_by_username).with('merygoround').and_return(user)
-          expect(response_map['message']).to eq(UserView::MESSAGE[:get_success])
+          
+          expected = {
+            'message' => UserView::MESSAGE[:get_success],
+            'data'=>user.to_hash
+          }.to_json
+          expect(response).to eq(expected)
         end
       end
     end
