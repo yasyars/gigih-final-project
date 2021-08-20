@@ -1,6 +1,8 @@
 require_relative '../models/post'
 require_relative '../models/user'
 require_relative '../views/post_view'
+require_relative '../helper/file_handler'
+
 
 class PostController
   def initialize
@@ -9,10 +11,13 @@ class PostController
 
   def add_post(params)
     user = User.find_by_id(params['user_id'])
+    file_handler = FileHandler.new
+    path_file = file_handler.upload(params['attachment'])
+
     post = Post.new({
       content: params['content'],
       user: user,
-      attachment: params['attachment']
+      attachment: path_file
     })
     post.save
     @response.create_success
