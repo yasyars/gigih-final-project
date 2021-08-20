@@ -27,7 +27,8 @@ describe UserController do
 
         response = controller.register(params)
         expected_json = {
-          'message' => 'User successfully created'
+          'status' => UserView::MESSAGE[:status_ok],
+          'message' => UserView::MESSAGE[:create_success]
         }.to_json
 
         expect(response).to eq(expected_json)
@@ -47,6 +48,7 @@ describe UserController do
         it 'should return success response with right message' do
           allow(User).to receive(:find_by_username).with('merygoround').and_return(nil)
           expected = {
+            'status' => UserView::MESSAGE[:status_ok],
             'message' => UserView::MESSAGE[:get_not_found],
             'data'=>nil
           }.to_json
@@ -66,6 +68,7 @@ describe UserController do
           allow(User).to receive(:find_by_username).with('merygoround').and_return(user)
           
           expected = {
+            'status' => UserView::MESSAGE[:status_ok],
             'message' => UserView::MESSAGE[:get_success],
             'data'=>user.to_hash
           }.to_json
