@@ -273,21 +273,19 @@ describe Post do
     end
   end
 
-  describe '#find_by_hashtag' do
+  describe '#find_by_hashtag_word' do
     context 'when there is no post that matches' do
       it 'should return empty array' do
-        hashtag = double
-        allow(hashtag).to receive(:id).and_return(1)
-        res = Post.find_by_hashtag(hashtag)
+        res = Post.find_by_hashtag_word('#ootd')
         expect(res).to eq([])
       end
     end
 
-    context 'when there is posts that match' do
+    context 'when there are posts that match' do
       it 'should return array with two member' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query = "SELECT * FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id WHERE hashtag_id = 1"
+        stub_query = "SELECT * FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
         stub_raw_data_post = [{
           'id' => 1,
           'content' => "#ootd yey",
@@ -308,9 +306,7 @@ describe Post do
 
         allow(stub_client).to receive(:close)
         
-        hashtag = double
-        allow(hashtag).to receive(:id).and_return(1)
-        res = Post.find_by_hashtag(hashtag)
+        res = Post.find_by_hashtag_word('#ootd')
         expect(res.size).to eq(2)
       end
     end
