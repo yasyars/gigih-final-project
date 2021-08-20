@@ -217,12 +217,10 @@ describe Comment do
     end
   end
 
-  describe '#find_by_hashtag' do
+  describe '#find_by_hashtag_word' do
     context 'when there is no comment that matches' do
       it 'should return empty array' do
-        hashtag = double
-        allow(hashtag).to receive(:id).and_return(1)
-        res = Comment.find_by_hashtag(hashtag)
+        res = Comment.find_by_hashtag_word('#ootd')
         expect(res).to eq([])
       end
     end
@@ -231,7 +229,7 @@ describe Comment do
       it 'should return array with members' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query = "SELECT * FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id WHERE hashtag_id = 1"
+        stub_query = "SELECT * FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
         stub_raw_data_comment = [{
           'id' => 1,
           'content' => "#ootd yey",
@@ -257,9 +255,7 @@ describe Comment do
 
         allow(stub_client).to receive(:close)
         
-        hashtag = double
-        allow(hashtag).to receive(:id).and_return(1)
-        res = Comment.find_by_hashtag(hashtag)
+        res = Comment.find_by_hashtag_word('#ootd')
         expect(res.size).to eq(2)
       end
     end
