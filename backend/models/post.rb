@@ -72,19 +72,17 @@ class Post
     query = "SELECT * FROM posts WHERE id = #{id}"
     raw_data = client.query(query)
     client.close
-    return [] if raw_data.count == 0 
+    return nil if raw_data.count == 0 
     posts = Array.new
-    raw_data.each do |data|
-      post = Post.new({
-        id: data['id'],
-        content: data['content'],
-        user: User.find_by_id(data['user_id']),
-        attachment: data['attachment'],
-        timestamp: data['timestamp']
-      })
-      posts.push(post)
-    end
-    posts
+    data = raw_data.first
+    post = Post.new({
+      id: data['id'],
+      content: data['content'],
+      user: User.find_by_id(data['user_id']),
+      attachment: data['attachment'],
+      timestamp: data['timestamp']
+    })
+    post
   end
 
   def self.find_by_hashtag_word(word)

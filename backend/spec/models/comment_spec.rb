@@ -155,7 +155,7 @@ describe Comment do
       @stub_client = double
       allow(Mysql2::Client).to receive(:new).and_return(@stub_client)
       allow(@stub_client).to receive(:close)
-      @stub_query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES (#{@content_str}, #{@user.id}, #{@post.id}, #{@attachment_str}"
+      @stub_query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES ('#{@content_str}', #{@user.id}, #{@post.id}, '#{@attachment_str}')"
       allow(@stub_client).to receive(:last_id).and_return(1)
     end
 
