@@ -2,6 +2,8 @@ require_relative '../../db/db_connector'
 require_relative '../../controllers/post_controller'
 require_relative '../../views/post_view'
 require_relative '../../models/post'
+require_relative '../../helper/file_handler'
+
 require 'json'
 
 describe PostController do
@@ -17,14 +19,24 @@ describe PostController do
     context 'when given valid params' do
       it 'should return right response' do
         controller = PostController.new
-        params = {
-          'user_id' => 1,
-          'content' => 'Halo semuanya #ootd',
-          'attachment' => 'data/file.png'
+        params =  params = {
+          "user_id"=>"1", 
+          "content"=>"Halo semuanya #morning", 
+          "attachment"=>{
+            "filename"=>"1 copy.jpg", 
+            "type"=>"image/jpeg", 
+            "name"=>"attachment", 
+            "tempfile"=>"<Tempfile:/var/folders/53/0gnz9zd53qg9srl770x812gr0000gn/T/RackMultipart20210821-2727-ebzsq8.jpg>",
+            "head"=>"Content-Disposition: form-data; name=\"attachment\"; filename=\"1 copy.jpg\"\r\nContent-Type: image/jpeg\r\n"
+          }
         }
 
         user = double
-        allow(User).to receive(:find_by_id).with(1).and_return(user)
+        allow(User).to receive(:find_by_id).with("1").and_return(user)
+        file_stub = double
+        allow(FileHandler).to receive(:new).and_return(file_stub)
+        allow(file_stub).to receive(:upload).with(params['attachment']).and_return('uploads/data.png')
+
         post = double
         allow(Post).to receive(:new).and_return(post)
         allow(post).to receive(:save)

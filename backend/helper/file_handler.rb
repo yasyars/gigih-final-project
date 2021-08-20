@@ -6,6 +6,7 @@ class FileHandler
     File.open(path_file, "w") do |f|
       f.write(file[:tempfile].read)
     end
+    return path_file
   end
 
   def generate_new_name_if_exist(file)

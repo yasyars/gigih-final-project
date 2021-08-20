@@ -2,6 +2,8 @@ require_relative '../models/comment'
 require_relative '../models/post'
 require_relative '../models/user'
 require_relative '../views/comment_view'
+require_relative '../helper/file_handler'
+
 
 class CommentController
   def initialize
@@ -11,11 +13,14 @@ class CommentController
   def add_comment(params)
     user = User.find_by_id(params['user_id'])
     post = Post.find_by_id(params['post_id'])
+    file_handler = FileHandler.new
+    path_file = file_handler.upload(params['attachment'])
+
     comment = Comment.new({
       content: params['content'],
       user: user,
       post: post,
-      attachment: params['attachment']
+      attachment: path_file
     })
     comment.save
     @response.create_success
