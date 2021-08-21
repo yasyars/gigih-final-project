@@ -44,7 +44,7 @@ This app handles simple activity in social media. This app able to handle:
 
 ## How to Run
 
-1. Open terminal, move your current working directory to backend first. It is important because 'backend' folder is the root folder for the app
+1. Open terminal, move your current working directory to 'backend' first. It is important because 'backend' folder is the root folder for the app
    ```
    cd backend
    ```
@@ -72,7 +72,11 @@ This app handles simple activity in social media. This app able to handle:
    ```
    ruby app.rb
    ```
-6. Test postman collection
-   - Import the collection (doc/Postman Collection) to postman
-   - Import the postman environment. You may adjust the env according your environment.
-   - Send the API request
+
+## API Documentation
+
+- Import the collection (doc/Postman Collection) to postman
+- Import the postman environment. You may adjust the env according your environment.
+  - Environment Gigih Development: using localhost:4567 as the domain (please do run the app first)
+  - Environment Gigih Production: using 34.97.129.31:4567 as the domain
+- Send the API request
