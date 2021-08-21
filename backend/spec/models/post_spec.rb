@@ -321,7 +321,8 @@ describe Post do
                           content: content_str,
                           user: user,
                           attachment: attachment_str,
-                          timestamp: timestamp_str
+                          timestamp: timestamp_str,
+                          hashtags: []
                         })
 
         post_hash = post.to_hash
@@ -330,7 +331,8 @@ describe Post do
           'content' => content_str,
           'user' => {},
           'attachment' => attachment_str,
-          'timestamp' => timestamp_str
+          'timestamp' => timestamp_str,
+          'hashtags'=> []
         }
 
         expect(post_hash).to eq(expected_hash)

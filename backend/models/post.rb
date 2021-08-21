@@ -9,7 +9,8 @@ require_relative '../exception/user_error'
 
 class Post
   attr_reader :id, :content, :user, :attachment, :timestamp, :hashtags
-
+  attr_accessor :hashtags
+  
   def initialize(param)
     @id = param[:id]
     @content = param[:content]
@@ -66,7 +67,7 @@ class Post
                         attachment: data['attachment'],
                         timestamp: data['timestamp']
                       })
-
+      post.hashtags = post.extract_hashtag
       posts.push(post)
     end
     posts
@@ -84,13 +85,15 @@ class Post
     return nil if raw_data.count.zero?
 
     data = raw_data.first
-    Post.new({
+    post = Post.new({
               id: data['id'],
               content: data['content'],
               user: User.find_by_id(data['user_id']),
               attachment: data['attachment'],
               timestamp: data['timestamp']
             })
+    post.hashtags = post.extract_hashtag
+    post
   end
 
   def self.find_by_id(id)
@@ -116,7 +119,8 @@ class Post
       'content' => @content,
       'user' => @user.to_hash,
       'attachment' => @attachment,
-      'timestamp' => @timestamp
+      'timestamp' => @timestamp,
+      'hashtags' => @hashtags
     }
   end
 
@@ -126,6 +130,5 @@ class Post
     else
       @attachment = nil
     end
-    # self
   end
 end
