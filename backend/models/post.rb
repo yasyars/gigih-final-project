@@ -121,8 +121,10 @@ class Post
     }
   end
 
-  def set_domain_attachment(domain)
-    @attachment = "#{domain}/#{@attachment}"
+  def set_domain_attachment(domain) 
+    unless @attachment.nil?
+      @attachment = "#{domain}/#{@attachment}"
+    end 
     self
   end
 end
