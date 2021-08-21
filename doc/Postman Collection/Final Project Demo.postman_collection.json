@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cb6e92f3-f10c-495d-a3fc-6022947f45e9",
+		"_postman_id": "7b64ad86-aaca-434d-ae11-bdd94114d587",
 		"name": "Final Project Demo",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -106,6 +106,41 @@
 			"response": []
 		},
 		{
+			"name": "Get All Post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post By Hashtag",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{social_media_service}}/post?hashtag=%23morning",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post"
+					],
+					"query": [
+						{
+							"key": "hashtag",
+							"value": "%23morning"
+						}
+					]
+				},
+				"description": "note: always use the %23 in the hashtag params. %23 indicates the '#' before the letter. All of hashtags are saved with #<word> template."
+			},
+			"response": []
+		},
+		{
 			"name": "Create Comment",
 			"request": {
 				"method": "POST",
@@ -167,26 +202,24 @@
 			"response": []
 		},
 		{
-			"name": "Get Post By Hashtag",
+			"name": "Get All Comment in a Post",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{social_media_service}}/post?hashtag=%23morning",
-					"host": [
-						"{{social_media_service}}"
-					],
-					"path": [
-						"post"
-					],
-					"query": [
-						{
-							"key": "hashtag",
-							"value": "%23morning"
-						}
-					]
-				},
-				"description": "note: always use the %23 in the hashtag params. %23 indicates the '#' before the letter. All of hashtags are saved with #<word> template."
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Comment in a Post By Hashtag",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
 			},
 			"response": []
 		},
