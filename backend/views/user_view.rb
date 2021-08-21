@@ -19,6 +19,7 @@ class UserView
   end
 
   def user_data(user)
+    return empty_user if user.nil?
     {
       'status' => MESSAGE[:status_ok],
       'message' => MESSAGE[:get_success],

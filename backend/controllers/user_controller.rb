@@ -18,11 +18,7 @@ class UserController
 
   def get_user_by_username(params)
     response = UserView.new
-    user = User.find_by_username(params['username'])
-    if user.nil?
-      response.empty_user
-    else
-      response.user_data(user)
-    end
+    user = User.find_by_username(params['username']) 
+    response.user_data(user)
   end
 end
