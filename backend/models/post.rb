@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 require_relative '../db/db_connector'
 require_relative 'user'
 require_relative 'hashtag'
 
-class Post 
+class Post
   attr_reader :id, :content, :user, :attachment, :timestamp, :hashtags
-  
+
   def initialize(param)
     @id = param[:id].to_i ? param[:id] : nil
     @content = param[:content]
     @user = param[:user]
-    @attachment = param[:attachment] ? param[:attachment] : nil
-    @timestamp = param[:timestamp] ? param[:timestamp] : nil
-    @hashtags = param[:hashtags] ? param[:hashtags] : []
+    @attachment = param[:attachment] || nil
+    @timestamp = param[:timestamp] || nil
+    @hashtags = param[:hashtags] || []
   end
 
   def valid?
-    @content.length <= 1000 && @content.gsub(/\s+/, "")!="" && !@user.nil?
+    @content.length <= 1000 && @content.gsub(/\s+/, '') != '' && !@user.nil?
   end
 
   def extract_hashtag
@@ -25,7 +27,8 @@ class Post
   end
 
   def save
-    raise ArgumentError.new("Invalid Post") unless valid?
+    raise ArgumentError, 'Invalid Post' unless valid?
+
     client = create_db_client
     query = "INSERT INTO posts (content, user_id, attachment) VALUES ('#{@content}', #{@user.id}, '#{@attachment}')"
     client.query(query)
@@ -47,20 +50,20 @@ class Post
 
   def self.find_all
     client = create_db_client
-    query = "SELECT * FROM posts"
+    query = 'SELECT * FROM posts'
     raw_data = client.query(query)
     client.close
-    return [] if raw_data.count == 0 
+    return [] if raw_data.count.zero?
 
-    posts = Array.new
+    posts = []
     raw_data.each do |data|
       post = Post.new({
-        id: data['id'],
-        content: data['content'],
-        user: User.find_by_id(data['user_id']),
-        attachment: data['attachment'],
-        timestamp: data['timestamp']
-      })
+                        id: data['id'],
+                        content: data['content'],
+                        user: User.find_by_id(data['user_id']),
+                        attachment: data['attachment'],
+                        timestamp: data['timestamp']
+                      })
 
       posts.push(post)
     end
@@ -72,17 +75,17 @@ class Post
     query = "SELECT * FROM posts WHERE id = #{id}"
     raw_data = client.query(query)
     client.close
-    return nil if raw_data.count == 0 
-    posts = Array.new
+    return nil if raw_data.count.zero?
+
+    posts = []
     data = raw_data.first
-    post = Post.new({
-      id: data['id'],
-      content: data['content'],
-      user: User.find_by_id(data['user_id']),
-      attachment: data['attachment'],
-      timestamp: data['timestamp']
-    })
-    post
+    Post.new({
+               id: data['id'],
+               content: data['content'],
+               user: User.find_by_id(data['user_id']),
+               attachment: data['attachment'],
+               timestamp: data['timestamp']
+             })
   end
 
   def self.find_by_hashtag_word(word)
@@ -90,23 +93,25 @@ class Post
     query = "SELECT * FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
     raw_data = client.query(query)
     client.close
-    return [] if raw_data.count == 0 
-    posts = Array.new
+    return [] if raw_data.count.zero?
+
+    posts = []
     raw_data.each do |data|
       post = Post.new({
-        id: data['id'],
-        content: data['content'],
-        user: User.find_by_id(data['user_id']),
-        attachment: data['attachment'],
-        timestamp: data['timestamp']
-      })
+                        id: data['id'],
+                        content: data['content'],
+                        user: User.find_by_id(data['user_id']),
+                        attachment: data['attachment'],
+                        timestamp: data['timestamp']
+                      })
       posts.push(post)
     end
     posts
   end
 
   def to_hash
-    raise ArgumentError.new("Invalid Comment") unless valid?
+    raise ArgumentError, 'Invalid Comment' unless valid?
+
     {
       'id' => @id.to_i,
       'content' => @content,
@@ -117,8 +122,7 @@ class Post
   end
 
   def set_domain_attachment(domain)
-    @attachment = domain + "/" + @attachment
+    @attachment = "#{domain}/#{@attachment}"
     self
   end
-
 end

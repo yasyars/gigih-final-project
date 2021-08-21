@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'json'
 require_relative './controllers/user_controller'
@@ -9,8 +11,8 @@ set :show_exceptions, false
 
 error ArgumentError do
   status 400
-  {'status' => 'error',
-   'message' =>  env['sinatra.error'].message }.to_json 
+  { 'status' => 'error',
+    'message' => env['sinatra.error'].message }.to_json
 end
 
 post '/user' do
@@ -32,7 +34,7 @@ post '/post' do
 end
 
 get '/post' do
-  word = params['hashtag'] ? params['hashtag'] : nil
+  word = params['hashtag'] || nil
   controller = PostController.new
   status 200
   controller.get_post(word, request.base_url)
@@ -45,14 +47,11 @@ get '/hashtag/trending' do
 end
 
 post '/post/:post_id/comment' do
- controller = CommentController.new
- status 200
- controller.add_comment(params)
+  controller = CommentController.new
+  status 200
+  controller.add_comment(params)
 end
 
 get '/uploads/:file_name' do
-  send_file 'uploads/'+ params['file_name']
+  send_file "uploads/#{params['file_name']}"
 end
-
-
-

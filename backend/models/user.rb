@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../db/db_connector'
 
 class User
@@ -5,20 +7,22 @@ class User
   attr_accessor :posts, :bio
 
   def initialize(param)
-    @id = param[:id].to_i ? param[:id] : nil
+    @id = param[:id] ? param[:id] : nil
     @username = param[:username]
     @email = param[:email]
-    @bio = param[:bio] ? param[:bio] : ""
-    @posts = param[:posts] ? param[:posts] : []
+    @bio = param[:bio] || ''
+    @posts = param[:posts] || []
   end
 
   def username_valid?
-    return false if @username.nil? || @username.gsub(/\s+/, "")=="" 
+    return false if @username.nil? || @username.gsub(/\s+/, '') == ''
+
     true
   end
 
   def email_valid?
     return false if @email.nil? || !!(@email !~ URI::MailTo::EMAIL_REGEXP)
+
     true
   end
 
@@ -27,8 +31,8 @@ class User
     query = "SELECT COUNT(id) as count FROM users WHERE username = '#{@username}'"
     raw_data = client.query(query)
     client.close
-    count = raw_data.first["count"]
-    count==0
+    count = raw_data.first['count']
+    count.zero?
   end
 
   def email_unique?
@@ -36,15 +40,15 @@ class User
     query = "SELECT COUNT(id) as count FROM users WHERE email = '#{@email}'"
     raw_data = client.query(query)
     client.close
-    count = raw_data.first["count"]
-    count==0
+    count = raw_data.first['count']
+    count.zero?
   end
 
   def save
-    raise ArgumentError.new("Invalid Username") unless username_valid?
-    raise ArgumentError.new("Invalid Email") unless email_valid?
-    raise ArgumentError.new("Duplicate Username") unless username_unique?
-    raise ArgumentError.new("Duplicate Email") unless email_unique?
+    raise ArgumentError, 'Invalid Username' unless username_valid?
+    raise ArgumentError, 'Invalid Email' unless email_valid?
+    raise ArgumentError, 'Duplicate Username' unless username_unique?
+    raise ArgumentError, 'Duplicate Email' unless email_unique?
 
     client = create_db_client
     query = "INSERT INTO users (username,email,bio) VALUES ('#{@username}','#{@email}','#{@bio}')"
@@ -58,18 +62,15 @@ class User
     raw_data = client.query(query)
     client.close
 
-    if raw_data.count == 0
-      return nil
-    end
+    return nil if raw_data.count.zero?
 
     data = raw_data.first
-    user = User.new({
-      id: data['id'],
-      username: data['username'],
-      email: data['email'],
-      bio: data['bio']
-    })
-    user
+    User.new({
+               id: data['id'],
+               username: data['username'],
+               email: data['email'],
+               bio: data['bio']
+             })
   end
 
   def self.find_by_username(username)
@@ -78,45 +79,42 @@ class User
     raw_data = client.query(query)
     client.close
 
-    if raw_data.count == 0
-      return nil
-    end
+    return nil if raw_data.count.zero?
 
     data = raw_data.first
-    user = User.new({
-      id: data['id'],
-      username: data['username'],
-      email: data['email'],
-      bio: data['bio']
-    })
-    user
+    User.new({
+               id: data['id'],
+               username: data['username'],
+               email: data['email'],
+               bio: data['bio']
+             })
   end
 
   def self.find_all
     client = create_db_client
-    query = "SELECT * FROM users"
+    query = 'SELECT * FROM users'
     raw_data = client.query(query)
     client.close
 
-    if raw_data.count == 0
-      return []
-    end
-    users = Array.new
+    return [] if raw_data.count.zero?
+
+    users = []
     raw_data.each do |data|
       user = User.new({
-        id: data['id'],
-        username: data['username'],
-        email: data['email'],
-        bio: data['bio']
-      })
+                        id: data['id'],
+                        username: data['username'],
+                        email: data['email'],
+                        bio: data['bio']
+                      })
       users.push(user)
     end
     users
   end
 
   def to_hash
-    raise ArgumentError.new("Invalid Username") unless username_valid?
-    raise ArgumentError.new("Invalid Email") unless email_valid?
+    raise ArgumentError, 'Invalid Username' unless username_valid?
+    raise ArgumentError, 'Invalid Email' unless email_valid?
+
     {
       'id' => @id,
       'username' => @username,

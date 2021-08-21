@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative '../db/db_connector'
 require_relative 'post'
 
 class Comment < Post
-
   def initialize(param)
     super(param)
     @post = param[:post]
@@ -13,7 +14,8 @@ class Comment < Post
   end
 
   def save
-    raise ArgumentError.new("Invalid Comment") unless valid?
+    raise ArgumentError, 'Invalid Comment' unless valid?
+
     client = create_db_client
     query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES ('#{@content}', #{@user.id}, #{@post.id}, '#{@attachment}')"
     puts query
@@ -39,17 +41,18 @@ class Comment < Post
     query = "SELECT * FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
     raw_data = client.query(query)
     client.close
-    return [] if raw_data.count == 0 
-    comments = Array.new
+    return [] if raw_data.count.zero?
+
+    comments = []
     raw_data.each do |data|
       comment = Comment.new({
-        id: data['id'],
-        content: data['content'],
-        user: User.find_by_id(data['user_id']),
-        post: Post.find_by_id(data['post_id']),
-        attachment: data['attachment'],
-        timestamp: data['timestamp']
-      })
+                              id: data['id'],
+                              content: data['content'],
+                              user: User.find_by_id(data['user_id']),
+                              post: Post.find_by_id(data['post_id']),
+                              attachment: data['attachment'],
+                              timestamp: data['timestamp']
+                            })
       comments.push(comment)
     end
     comments
@@ -60,24 +63,26 @@ class Comment < Post
     query = "SELECT * FROM comments WHERE id = #{id}"
     raw_data = client.query(query)
     client.close
-    return [] if raw_data.count == 0 
-    comments = Array.new
+    return [] if raw_data.count.zero?
+
+    comments = []
     raw_data.each do |data|
       comment = Comment.new({
-        id: data['id'],
-        content: data['content'],
-        user: User.find_by_id(data['user_id']),
-        post: Post.find_by_id(data['post_id']),
-        attachment: data['attachment'],
-        timestamp: data['timestamp']
-      })
+                              id: data['id'],
+                              content: data['content'],
+                              user: User.find_by_id(data['user_id']),
+                              post: Post.find_by_id(data['post_id']),
+                              attachment: data['attachment'],
+                              timestamp: data['timestamp']
+                            })
       comments.push(comment)
     end
     comments
   end
 
   def to_hash
-    raise ArgumentError.new("Invalid Comment") unless valid?
+    raise ArgumentError, 'Invalid Comment' unless valid?
+
     {
       'id' => @id,
       'content' => @content,
@@ -87,5 +92,4 @@ class Comment < Post
       'timestamp' => @timestamp
     }
   end
-
 end

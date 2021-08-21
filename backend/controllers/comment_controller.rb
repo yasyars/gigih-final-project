@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require_relative '../models/comment'
 require_relative '../models/post'
 require_relative '../models/user'
 require_relative '../views/comment_view'
 require_relative '../helper/file_handler'
-
 
 class CommentController
   def initialize
@@ -17,11 +18,11 @@ class CommentController
     path_file = file_handler.upload(params['attachment'])
 
     comment = Comment.new({
-      content: params['content'],
-      user: user,
-      post: post,
-      attachment: path_file
-    })
+                            content: params['content'],
+                            user: user,
+                            post: post,
+                            attachment: path_file
+                          })
     comment.save
     @response.create_success
   end

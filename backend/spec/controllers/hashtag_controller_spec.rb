@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../db/db_connector'
 require_relative '../../controllers/hashtag_controller'
 require_relative '../../views/hashtag_view'
@@ -6,15 +8,15 @@ require 'json'
 describe HashtagController do
   before [:each] do
     client = create_db_client
-    client.query("SET FOREIGN_KEY_CHECKS = 0")
-    client.query("TRUNCATE TABLE hashtags")
-    client.query("SET FOREIGN_KEY_CHECKS =1")
+    client.query('SET FOREIGN_KEY_CHECKS = 0')
+    client.query('TRUNCATE TABLE hashtags')
+    client.query('SET FOREIGN_KEY_CHECKS =1')
     client.close
-  end  
-  
+  end
+
   describe '#get_trending' do
-    let(:controller) {HashtagController.new}
-    let(:response) {controller.get_trending}
+    let(:controller) { HashtagController.new }
+    let(:response) { controller.get_trending }
 
     context 'when there is no hashtag' do
       it 'should return success response with empty array data' do
@@ -22,7 +24,7 @@ describe HashtagController do
         expected = {
           'status' => HashtagView::MESSAGE[:status_ok],
           'message' => HashtagView::MESSAGE[:get_not_found],
-          'data'=>[]
+          'data' => []
         }.to_json
         expect(response).to eq(expected)
       end
@@ -38,7 +40,7 @@ describe HashtagController do
     #     })
 
     #     allow(User).to receive(:find_by_username).with('merygoround').and_return(user)
-        
+
     #     expected = {
     #       'status' => UserView::MESSAGE[:status_ok],
     #       'message' => UserView::MESSAGE[:get_success],
@@ -47,6 +49,5 @@ describe HashtagController do
     #     expect(response).to eq(expected)
     #   end
     # end
- 
   end
 end

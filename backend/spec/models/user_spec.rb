@@ -1,22 +1,24 @@
+# frozen_string_literal: true
+
 require_relative '../../db/db_connector'
 require_relative '../../models/user'
 
 describe User do
   before [:each] do
     client = create_db_client
-    client.query("SET FOREIGN_KEY_CHECKS = 0")
-    client.query("TRUNCATE TABLE users")
-    client.query("SET FOREIGN_KEY_CHECKS =1")
+    client.query('SET FOREIGN_KEY_CHECKS = 0')
+    client.query('TRUNCATE TABLE users')
+    client.query('SET FOREIGN_KEY_CHECKS =1')
     client.close
-  end  
+  end
 
   describe '#username_valid?' do
     context 'when initialized with valid input' do
       it 'should return true' do
         user = User.new({
-          username: "merygoround",
-          email: "mery.go@gmail.com"
-        })
+                          username: 'merygoround',
+                          email: 'mery.go@gmail.com'
+                        })
         expect(user.username_valid?).to be true
       end
     end
@@ -24,9 +26,9 @@ describe User do
     context 'when initialized with invalid input' do
       it 'should return true' do
         user = User.new({
-          username: " ",
-          email: "mery.go@gmail.com"
-        })
+                          username: ' ',
+                          email: 'mery.go@gmail.com'
+                        })
         expect(user.username_valid?).to be false
       end
     end
@@ -36,9 +38,9 @@ describe User do
     context 'when initialized with valid email' do
       it 'should return true' do
         user = User.new({
-          username: "merygoround",
-          email: "mery.go@gmail.com"
-        })
+                          username: 'merygoround',
+                          email: 'mery.go@gmail.com'
+                        })
         expect(user.email_valid?).to be true
       end
     end
@@ -46,9 +48,9 @@ describe User do
     context 'when initialized with invalid email' do
       it 'should return false' do
         user = User.new({
-          username: "merysoround",
-          email: "mapwe"
-        })
+                          username: 'merysoround',
+                          email: 'mapwe'
+                        })
 
         expect(user.email_valid?).to be false
       end
@@ -57,9 +59,9 @@ describe User do
     context 'when initialized with empty email' do
       it 'should return false' do
         user = User.new({
-          username: "merygoround",
-          email: " "
-        })
+                          username: 'merygoround',
+                          email: ' '
+                        })
 
         expect(user.email_valid?).to be false
       end
@@ -70,9 +72,9 @@ describe User do
     context 'when initialized with unique values' do
       it 'should return true' do
         user = User.new({
-          username: "merygoround",
-          email: "mery.go@gmail.com"
-        })
+                          username: 'merygoround',
+                          email: 'mery.go@gmail.com'
+                        })
         expect(user.username_unique?).to be true
       end
     end
@@ -80,14 +82,14 @@ describe User do
     context 'when initialized with duplicate data' do
       it 'should return false' do
         user = User.new({
-          username: "merygoround",
-          email: "mery.go@gmail.com"
-        })
+                          username: 'merygoround',
+                          email: 'mery.go@gmail.com'
+                        })
 
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT COUNT(id) as count FROM users WHERE username = 'merygoround'"
-        allow(stub_client).to receive(:query).with(stub_query).and_return([{"count" => 1}])
+        stub_query = "SELECT COUNT(id) as count FROM users WHERE username = 'merygoround'"
+        allow(stub_client).to receive(:query).with(stub_query).and_return([{ 'count' => 1 }])
         allow(stub_client).to receive(:close)
         expect(user.username_unique?).to be false
       end
@@ -98,9 +100,9 @@ describe User do
     context 'when initialized with unique email' do
       it 'should return true' do
         user = User.new({
-          username: "merygoround",
-          email: "mery.go@gmail.com"
-        })
+                          username: 'merygoround',
+                          email: 'mery.go@gmail.com'
+                        })
         expect(user.email_unique?).to be true
       end
     end
@@ -108,14 +110,14 @@ describe User do
     context 'when initialized with duplicate email' do
       it 'should return false' do
         user = User.new({
-          username: "merygoround",
-          email: "mery.go@gmail.com"
-        })
+                          username: 'merygoround',
+                          email: 'mery.go@gmail.com'
+                        })
 
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT COUNT(id) as count FROM users WHERE email = 'mery.go@gmail.com'"
-        allow(stub_client).to receive(:query).with(stub_query).and_return([{"count" => 1}])
+        stub_query = "SELECT COUNT(id) as count FROM users WHERE email = 'mery.go@gmail.com'"
+        allow(stub_client).to receive(:query).with(stub_query).and_return([{ 'count' => 1 }])
         allow(stub_client).to receive(:close)
         expect(user.email_unique?).to be false
       end
@@ -126,68 +128,68 @@ describe User do
     context 'when save non unique username' do
       it 'should return error with Message "Duplicate Username"' do
         user = User.new({
-          username: 'merygoround',
-          email: 'mery@go.round',
-          bio: 'A ruby lover || a musician'
-        })
+                          username: 'merygoround',
+                          email: 'mery@go.round',
+                          bio: 'A ruby lover || a musician'
+                        })
 
         user.save
 
-        expect{user.save}.to raise_error(ArgumentError, "Duplicate Username")
+        expect { user.save }.to raise_error(ArgumentError, 'Duplicate Username')
       end
     end
 
     context 'when save non unique email' do
       it 'should return error with Message "Duplicate Email"' do
         user = User.new({
-          username: 'merygoround',
-          email: 'mery@go.round',
-          bio: 'A ruby lover || a musician'
-        })
+                          username: 'merygoround',
+                          email: 'mery@go.round',
+                          bio: 'A ruby lover || a musician'
+                        })
 
         user.save
 
         user = User.new({
-          username: 'merygorounds',
-          email: 'mery@go.round',
-          bio: 'A ruby lover || a musician'
-        })
+                          username: 'merygorounds',
+                          email: 'mery@go.round',
+                          bio: 'A ruby lover || a musician'
+                        })
 
-        expect{user.save}.to raise_error(ArgumentError, "Duplicate Email")
+        expect { user.save }.to raise_error(ArgumentError, 'Duplicate Email')
       end
     end
 
     context 'when save invalid username' do
       it 'should return error with Message "Invalid Username"' do
         user = User.new({
-          username: ' ',
-          email: 'mery@go.round',
-          bio: 'A ruby lover || a musician'
-        })
-        expect{user.save}.to raise_error(ArgumentError, "Invalid Username")
+                          username: ' ',
+                          email: 'mery@go.round',
+                          bio: 'A ruby lover || a musician'
+                        })
+        expect { user.save }.to raise_error(ArgumentError, 'Invalid Username')
       end
     end
 
     context 'when save invalid email' do
       it 'should return error with Message "Invalid Email"' do
         user = User.new({
-          username: 'merygoround',
-          email: '',
-          bio: 'A ruby lover || a musician'
-        })
-        expect{user.save}.to raise_error(ArgumentError, "Invalid Email")
+                          username: 'merygoround',
+                          email: '',
+                          bio: 'A ruby lover || a musician'
+                        })
+        expect { user.save }.to raise_error(ArgumentError, 'Invalid Email')
       end
     end
 
     context 'when save valid object' do
       it 'should succesfully run insert query' do
         user = User.new({
-          username: 'merygoround',
-          email: 'mery@go.round',
-          bio: 'A ruby lover || a musician'
-        })
+                          username: 'merygoround',
+                          email: 'mery@go.round',
+                          bio: 'A ruby lover || a musician'
+                        })
 
-        stub_query ="INSERT INTO users (username,email,bio) VALUES ('merygoround','mery@go.round','A ruby lover || a musician')"
+        stub_query = "INSERT INTO users (username,email,bio) VALUES ('merygoround','mery@go.round','A ruby lover || a musician')"
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
         allow(user).to receive(:username_unique?).and_return(true)
@@ -200,7 +202,7 @@ describe User do
       end
     end
   end
-  
+
   describe '#find_by_id' do
     context 'when find non existent object' do
       it 'should return nil' do
@@ -213,13 +215,13 @@ describe User do
       it 'should return right object' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT * FROM users WHERE id= 1"
-        
-        stub_raw_data= [{
-            'id' => 1,
-            'username'  => 'merygoround',
-            'email'  => 'mery@go.round',
-            'bio'  => 'A coder'
+        stub_query = 'SELECT * FROM users WHERE id= 1'
+
+        stub_raw_data = [{
+          'id' => 1,
+          'username' => 'merygoround',
+          'email' => 'mery@go.round',
+          'bio' => 'A coder'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -247,13 +249,13 @@ describe User do
       it 'should return right object' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT * FROM users WHERE username = 'merygoround'"
-        
-        stub_raw_data= [{
-            'id' => 1,
-            'username'  => 'merygoround',
-            'email'  => 'mery@go.round',
-            'bio'  => 'A coder'
+        stub_query = "SELECT * FROM users WHERE username = 'merygoround'"
+
+        stub_raw_data = [{
+          'id' => 1,
+          'username' => 'merygoround',
+          'email' => 'mery@go.round',
+          'bio' => 'A coder'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -265,7 +267,7 @@ describe User do
       end
     end
   end
-  
+
   describe '#find_all' do
     context 'when no user at all' do
       it 'should return empty array' do
@@ -278,18 +280,18 @@ describe User do
       it 'should return correct array' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT * FROM users"
-        
-        stub_raw_data= [{
+        stub_query = 'SELECT * FROM users'
+
+        stub_raw_data = [{
           'id' => 1,
-          'username'  => 'merygoround',
-          'email'  => 'mery@go.round',
-          'bio'  => 'A coder'
-        },{
+          'username' => 'merygoround',
+          'email' => 'mery@go.round',
+          'bio' => 'A coder'
+        }, {
           'id' => 2,
-          'username'  => 'merygocube',
-          'email'  => 'mery@go.cube',
-          'bio'  => 'A coder'
+          'username' => 'merygocube',
+          'email' => 'mery@go.cube',
+          'bio' => 'A coder'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -307,15 +309,15 @@ describe User do
   describe '#to_hash' do
     context 'when initialized with valid object' do
       it 'should return expected map' do
-        username_str = "nana"
-        email_str = "nana@gmail.com"
-        bio_str = "its a bio"
+        username_str = 'nana'
+        email_str = 'nana@gmail.com'
+        bio_str = 'its a bio'
         user = User.new({
-          id: 1,
-          username: username_str,
-          email: email_str,
-          bio: bio_str,
-        })
+                          id: 1,
+                          username: username_str,
+                          email: email_str,
+                          bio: bio_str
+                        })
 
         user_hash = user.to_hash
         expected_hash = {
@@ -324,10 +326,9 @@ describe User do
           'email' => email_str,
           'bio' => bio_str
         }
-        
+
         expect(user_hash).to eq(expected_hash)
       end
     end
   end
-
 end

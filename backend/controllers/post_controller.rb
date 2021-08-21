@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative '../models/post'
 require_relative '../models/user'
 require_relative '../views/post_view'
 require_relative '../helper/file_handler'
-
 
 class PostController
   def initialize
@@ -15,10 +16,10 @@ class PostController
     path_file = file_handler.upload(params['attachment'])
 
     post = Post.new({
-      content: params['content'],
-      user: user,
-      attachment: path_file
-    })
+                      content: params['content'],
+                      user: user,
+                      attachment: path_file
+                    })
     post.save
     @response.create_success
   end
@@ -26,16 +27,16 @@ class PostController
   def get_post(word, domain)
     if word.nil?
       posts = Post.find_all
-      posts = posts.map {|post| post.set_domain_attachment(domain)}
+      posts = posts.map { |post| post.set_domain_attachment(domain) }
       @response.post_array(posts)
     else
-      get_post_by_hashtag(word,domain)
+      get_post_by_hashtag(word, domain)
     end
   end
 
   def get_post_by_hashtag(word, domain)
     posts = Post.find_by_hashtag_word(word)
-    posts = posts.map {|post| post.set_domain_attachment(domain)}
+    posts = posts.map { |post| post.set_domain_attachment(domain) }
     @response.post_array(posts)
   end
 end

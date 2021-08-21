@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../db/db_connector'
 require_relative '../../controllers/user_controller'
 require_relative '../../views/user_view'
@@ -6,12 +8,12 @@ require 'json'
 describe UserController do
   before [:each] do
     client = create_db_client
-    client.query("SET FOREIGN_KEY_CHECKS = 0")
-    client.query("TRUNCATE TABLE users")
-    client.query("SET FOREIGN_KEY_CHECKS =1")
+    client.query('SET FOREIGN_KEY_CHECKS = 0')
+    client.query('TRUNCATE TABLE users')
+    client.query('SET FOREIGN_KEY_CHECKS =1')
     client.close
-  end  
-  
+  end
+
   describe '#register' do
     context 'when given valid params' do
       it 'should return right response' do
@@ -37,12 +39,14 @@ describe UserController do
   end
 
   describe '#get_user_by_username' do
-    describe 'when given valid params' do 
-      let(:controller) {UserController.new}
-      let(:params) {{
-        'username' => 'merygoround'
-      }}
-      let(:response) {controller.get_user_by_username(params)}
+    describe 'when given valid params' do
+      let(:controller) { UserController.new }
+      let(:params) do
+        {
+          'username' => 'merygoround'
+        }
+      end
+      let(:response) { controller.get_user_by_username(params) }
 
       context 'when not found' do
         it 'should return success response with right message' do
@@ -50,7 +54,7 @@ describe UserController do
           expected = {
             'status' => UserView::MESSAGE[:status_ok],
             'message' => UserView::MESSAGE[:get_not_found],
-            'data'=>nil
+            'data' => nil
           }.to_json
           expect(response).to eq(expected)
         end
@@ -59,18 +63,18 @@ describe UserController do
         it 'should return success response with right message' do
           user = double
           allow(user).to receive(:to_hash).and_return({
-            'id' => 1,
-            'username' => 'merygoround',
-            'email' => 'mery@go.round',
-            'bio' => 'A ruby lover'
-          })
+                                                        'id' => 1,
+                                                        'username' => 'merygoround',
+                                                        'email' => 'mery@go.round',
+                                                        'bio' => 'A ruby lover'
+                                                      })
 
           allow(User).to receive(:find_by_username).with('merygoround').and_return(user)
-          
+
           expected = {
             'status' => UserView::MESSAGE[:status_ok],
             'message' => UserView::MESSAGE[:get_success],
-            'data'=>user.to_hash
+            'data' => user.to_hash
           }.to_json
           expect(response).to eq(expected)
         end

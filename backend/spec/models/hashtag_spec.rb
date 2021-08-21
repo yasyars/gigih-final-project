@@ -1,22 +1,23 @@
+# frozen_string_literal: true
+
 require_relative '../../db/db_connector'
 require_relative '../../models/hashtag'
-
 
 describe Hashtag do
   before [:each] do
     client = create_db_client
-    client.query("SET FOREIGN_KEY_CHECKS = 0")
-    client.query("TRUNCATE TABLE hashtags")
-    client.query("SET FOREIGN_KEY_CHECKS =1")
+    client.query('SET FOREIGN_KEY_CHECKS = 0')
+    client.query('TRUNCATE TABLE hashtags')
+    client.query('SET FOREIGN_KEY_CHECKS =1')
     client.close
-  end  
+  end
 
   describe '#valid?' do
     context 'when initialized with valid input' do
       it 'should return true' do
         hashtag = Hashtag.new({
-          word: "#generasigigih"
-        })
+                                word: '#generasigigih'
+                              })
         expect(hashtag.valid?).to be true
       end
     end
@@ -24,12 +25,12 @@ describe Hashtag do
     context 'when initialized with invalid format' do
       it 'should return false' do
         hashtag = Hashtag.new({
-          word: "#generasi gigih"
-        })
+                                word: '#generasi gigih'
+                              })
         hashtag2 = Hashtag.new({
-          word: "generasi"
-        })
-        
+                                 word: 'generasi'
+                               })
+
         expect(hashtag.valid?).to be false
         expect(hashtag2.valid?).to be false
       end
@@ -38,8 +39,8 @@ describe Hashtag do
     context 'when initialized with empty word' do
       it 'should return false' do
         hashtag = Hashtag.new({
-          word: "",
-        })
+                                word: ''
+                              })
         expect(hashtag.valid?).to be false
       end
     end
@@ -49,8 +50,8 @@ describe Hashtag do
     context 'when initialized with unique values' do
       it 'should return true' do
         hashtag = Hashtag.new({
-          word: "#generasigigih"
-        })
+                                word: '#generasigigih'
+                              })
         expect(hashtag.unique?).to be true
       end
     end
@@ -58,51 +59,51 @@ describe Hashtag do
     context 'when initialized with duplicate data' do
       it 'should return false' do
         hashtag = Hashtag.new({
-          word: "#GenerasiGigih"
-        })
+                                word: '#GenerasiGigih'
+                              })
 
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT COUNT(id) as count FROM hashtags WHERE word = '#generasigigih'"
-        allow(stub_client).to receive(:query).with(stub_query).and_return([{"count" => 1}])
+        stub_query = "SELECT COUNT(id) as count FROM hashtags WHERE word = '#generasigigih'"
+        allow(stub_client).to receive(:query).with(stub_query).and_return([{ 'count' => 1 }])
         allow(stub_client).to receive(:close)
         expect(hashtag.unique?).to be false
       end
     end
   end
-  
+
   describe '#save' do
     context 'when save non unique data' do
       it 'should return error with message Duplicate Data' do
         hashtag = Hashtag.new({
-          word: '#GenerasiGigih'          
-        })
+                                word: '#GenerasiGigih'
+                              })
         hashtag.save
 
-        expect{hashtag.save}.to raise_error(StandardError, "Duplicate Data")
+        expect { hashtag.save }.to raise_error(StandardError, 'Duplicate Data')
       end
     end
 
     context 'when save invalid hashtag' do
       it 'should return error with error message Invalid Hashtag' do
         hashtag = Hashtag.new({
-          word: "asd"
-        })
-        expect{hashtag.save}.to raise_error(StandardError, "Invalid Hashtag")
+                                word: 'asd'
+                              })
+        expect { hashtag.save }.to raise_error(StandardError, 'Invalid Hashtag')
       end
     end
 
     context 'when save valid object' do
       it 'should succesfully run insert hashtag' do
         hashtag = Hashtag.new({
-          word: '#generasigigih'
-        })
-      
-        stub_query ="INSERT INTO hashtags (word) VALUES ('#generasigigih')"
-        word_count_query="SELECT COUNT(id) as count FROM hashtags WHERE word = '#generasigigih'"
+                                word: '#generasigigih'
+                              })
+
+        stub_query = "INSERT INTO hashtags (word) VALUES ('#generasigigih')"
+        word_count_query = "SELECT COUNT(id) as count FROM hashtags WHERE word = '#generasigigih'"
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        allow(stub_client).to receive(:query).with(word_count_query).and_return([{"count" => 0}])
+        allow(stub_client).to receive(:query).with(word_count_query).and_return([{ 'count' => 0 }])
         expect(stub_client).to receive(:query).with(stub_query)
         allow(stub_client).to receive(:close)
 
@@ -113,27 +114,27 @@ describe Hashtag do
 
   describe '#save_or_find' do
     context 'when initialized with unique hashtag' do
-      it 'should save hashtag' do        
+      it 'should save hashtag' do
         hashtag = double
         allow(Hashtag).to receive(:new).and_return(hashtag)
         allow(hashtag).to receive(:unique?).and_return(true)
         allow(Hashtag).to receive(:find_by_word)
-        
+
         expect(hashtag).to receive(:save)
-       
-        Hashtag.save_or_find("ootd")
+
+        Hashtag.save_or_find('ootd')
       end
     end
     context 'when initialized with not unique hashtag' do
-      it 'should only find hashtag' do        
+      it 'should only find hashtag' do
         hashtag = double
         allow(Hashtag).to receive(:new).and_return(hashtag)
         allow(hashtag).to receive(:unique?).and_return(false)
         allow(Hashtag).to receive(:find_by_word)
-        
+
         expect(hashtag).not_to receive(:save)
-       
-        Hashtag.save_or_find("ootd")
+
+        Hashtag.save_or_find('ootd')
       end
     end
   end
@@ -150,11 +151,11 @@ describe Hashtag do
       it 'should return right object' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query ="SELECT * FROM hashtags WHERE id= 1"
-        
-        stub_raw_data= [{
+        stub_query = 'SELECT * FROM hashtags WHERE id= 1'
+
+        stub_raw_data = [{
           'id' => 1,
-          'word'  => '#generasigigih'
+          'word' => '#generasigigih'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -180,13 +181,13 @@ describe Hashtag do
       it 'should return right object' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        
+
         word_str = '#generasigigih'
-        stub_query ="SELECT * FROM hashtags WHERE word = '#{word_str}'"
-        
-        stub_raw_data= [{
+        stub_query = "SELECT * FROM hashtags WHERE word = '#{word_str}'"
+
+        stub_raw_data = [{
           'id' => 1,
-          'word'  => word_str
+          'word' => word_str
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -229,22 +230,22 @@ describe Hashtag do
             GROUP BY hashtag_id
             ORDER BY COUNT(hashtag_data.post_id) DESC
             LIMIT 5;"
-        
-        stub_raw_data= [{
+
+        stub_raw_data = [{
           'id' => 1,
-          'word'  => '#generasigigih1'
-        },{
+          'word' => '#generasigigih1'
+        }, {
           'id' => 2,
-          'word'  => '#generasigigih2'
-        },{
+          'word' => '#generasigigih2'
+        }, {
           'id' => 3,
-          'word'  => '#generasigigih3'
-        },{
+          'word' => '#generasigigih3'
+        }, {
           'id' => 4,
-          'word'  => '#generasigigih4'
-        },{
+          'word' => '#generasigigih4'
+        }, {
           'id' => 5,
-          'word'  => '#generasigigih5'
+          'word' => '#generasigigih5'
         }]
 
         allow(stub_client).to receive(:query).with(stub_query).and_return(stub_raw_data)
@@ -261,18 +262,17 @@ describe Hashtag do
     context 'when initialized with valid object' do
       it 'should return expected map' do
         hashtag = Hashtag.new({
-          id: 1,
-          word: "#haha"
-        })
+                                id: 1,
+                                word: '#haha'
+                              })
 
         expected_hash = {
           'id' => 1,
-          'word' => "#haha"
+          'word' => '#haha'
         }
 
         expect(hashtag.to_hash).to eq(expected_hash)
       end
     end
   end
-  
 end

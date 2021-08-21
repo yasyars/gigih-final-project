@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 require_relative '../db/db_connector'
 
 class Hashtag
   attr_reader :id, :word
 
   def initialize(param)
-    @id= param[:id].to_i ? param[:id] : nil
+    @id = param[:id].to_i ? param[:id] : nil
     @word = param[:word]
-    @comments = param[:comments] ? param[:comments] : []
-    @posts = param[:posts] ? param[:posts] : []
+    @comments = param[:comments] || []
+    @posts = param[:posts] || []
   end
 
   def valid?
     word_pattern = /^#\S+$/
-    return !@word.nil? && @word.gsub(/\s+/, "")!="" && !!(@word =~ word_pattern)
+    !@word.nil? && @word.gsub(/\s+/, '') != '' && !!(@word =~ word_pattern)
   end
 
   def unique?
@@ -20,13 +22,14 @@ class Hashtag
     query = "SELECT COUNT(id) as count FROM hashtags WHERE word = '#{@word.downcase}'"
     raw_data = client.query(query)
     client.close
-    count = raw_data.first["count"]
-    count == 0
+    count = raw_data.first['count']
+    count.zero?
   end
 
   def save
-    raise ArgumentError.new("Invalid Hashtag") unless valid?
-    raise ArgumentError.new("Duplicate Data") unless unique?
+    raise ArgumentError, 'Invalid Hashtag' unless valid?
+    raise ArgumentError, 'Duplicate Data' unless unique?
+
     client = create_db_client
     query = "INSERT INTO hashtags (word) VALUES ('#{@word.downcase}')"
     client.query(query)
@@ -34,10 +37,9 @@ class Hashtag
   end
 
   def self.save_or_find(word)
-    hashtag = Hashtag.new({word: word})
+    hashtag = Hashtag.new({ word: word })
     hashtag.save if hashtag.unique?
-    hashtag = Hashtag.find_by_word(word)
-    hashtag
+    Hashtag.find_by_word(word)
   end
 
   def self.find_by_id(id)
@@ -46,28 +48,26 @@ class Hashtag
     raw_data = client.query(query)
     client.close
 
-    return nil if raw_data.count == 0
+    return nil if raw_data.count.zero?
 
     data = raw_data.first
-    hashtag = Hashtag.new({
-      id: data['id'],
-      word: data['word']
-    })
-    hashtag
+    Hashtag.new({
+                  id: data['id'],
+                  word: data['word']
+                })
   end
 
   def self.find_by_word(word)
     client = create_db_client
     query = "SELECT * FROM hashtags WHERE word = '#{word.downcase}'"
     raw_data = client.query(query)
-    return nil if raw_data.count == 0
+    return nil if raw_data.count.zero?
 
     data = raw_data.first
-    hashtag = Hashtag.new({
-      id: data['id'],
-      word: data['word']
-    })
-    hashtag
+    Hashtag.new({
+                  id: data['id'],
+                  word: data['word']
+                })
   end
 
   def self.find_trending
@@ -92,21 +92,22 @@ class Hashtag
     raw_data = client.query(query)
     client.close
 
-    return [] if raw_data.count == 0
-    
-    hashtags = Array.new
+    return [] if raw_data.count.zero?
+
+    hashtags = []
     raw_data.each do |data|
       hashtag = Hashtag.new({
-        id: data['id'].to_i,
-        word: data['word'].downcase
-      })
+                              id: data['id'].to_i,
+                              word: data['word'].downcase
+                            })
       hashtags.push(hashtag)
     end
     hashtags
   end
 
   def to_hash
-    raise ArgumentError.new("Invalid Hashtag") unless valid?
+    raise ArgumentError, 'Invalid Hashtag' unless valid?
+
     {
       'id' => @id,
       'word' => @word.downcase
