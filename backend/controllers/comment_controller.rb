@@ -15,8 +15,7 @@ class CommentController
     user = User.find_by_id(params['user_id'])
     post = Post.find_by_id(params['post_id'])
     file_handler = FileHandler.new
-    path_file = file_handler.upload(params['attachment'])
-
+    path_file = file_handler.upload(params['attachment']) || nil
     comment = Comment.new({
                             content: params['content'],
                             user: user,
@@ -27,10 +26,10 @@ class CommentController
     @response.create_success
   end
 
-  def get_post(params)
+  def get_comment(params)
     word = params['word']
     if word.nil?
-      post = Post.find_by_id(params['post_id'])
+      post = Comment.find_by_id(params['post_id'])
       @response.post_array(post.comments)
     else
       get_comment_by_hashtag(word)

@@ -13,7 +13,7 @@ class PostController
   def add_post(params)
     user = User.find_by_id(params['user_id'])
     file_handler = FileHandler.new
-    path_file = file_handler.upload(params['attachment'])
+    path_file = file_handler.upload(params['attachment']) || nil
 
     post = Post.new({
                       content: params['content'],
