@@ -32,7 +32,7 @@ class PostController
   def get_post(word, domain)
     if word.nil?
       posts = Post.find_all
-      posts = posts.map { |post| post.set_domain_attachment(domain) }
+      posts.map { |post| post.set_domain_attachment(domain) }
       @response.post_array(posts)
     else
       get_post_by_hashtag(word, domain)
@@ -41,7 +41,7 @@ class PostController
 
   def get_post_by_hashtag(word, domain)
     posts = Post.find_by_hashtag_word(word)
-    posts = posts.map { |post| post.set_domain_attachment(domain) }
+    posts.map { |post| post.set_domain_attachment(domain) }
     @response.post_array(posts)
   end
 end
