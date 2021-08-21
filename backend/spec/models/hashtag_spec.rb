@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../db/db_connector'
+require_relative '../../exception/hashtag_error'
 require_relative '../../models/hashtag'
 
 describe Hashtag do
@@ -80,7 +81,7 @@ describe Hashtag do
                               })
         hashtag.save
 
-        expect { hashtag.save }.to raise_error(StandardError, 'Duplicate Data')
+        expect { hashtag.save }.to raise_error(DuplicateHashtag)
       end
     end
 
@@ -89,7 +90,7 @@ describe Hashtag do
         hashtag = Hashtag.new({
                                 word: 'asd'
                               })
-        expect { hashtag.save }.to raise_error(StandardError, 'Invalid Hashtag')
+        expect { hashtag.save }.to raise_error(InvalidHashtag)
       end
     end
 

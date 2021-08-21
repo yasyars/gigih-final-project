@@ -18,12 +18,12 @@ end
 
 class DuplicateUsername < ArgumentError
   def message
-    "Username is already taken"
+    "Username is taken"
   end
 end
 
 class DuplicateEmail < ArgumentError
   def message
-    "Email is already taken"
+    "Email is taken"
   end
 end

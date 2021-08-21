@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../db/db_connector'
+require_relative '../../exception/comment_error'
 require_relative '../../models/comment'
 require_relative '../../models/post'
 require_relative '../../models/user'
@@ -185,7 +186,7 @@ describe Comment do
                                 attachment: @attachment_str
                               })
 
-        expect { comment.save }.to raise_error(ArgumentError, 'Invalid Comment')
+        expect { comment.save }.to raise_error(InvalidComment)
       end
     end
   end

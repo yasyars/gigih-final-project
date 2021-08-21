@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../db/db_connector'
+require_relative '../exception/comment_error'
 require_relative 'post'
 
 class Comment < Post
@@ -14,7 +15,7 @@ class Comment < Post
   end
 
   def save
-    raise ArgumentError, 'Invalid Comment' unless valid?
+    raise InvalidComment unless valid?
 
     client = create_db_client
     query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES ('#{@content}', #{@user.id}, #{@post.id}, '#{@attachment}')"
@@ -81,7 +82,7 @@ class Comment < Post
   end
 
   def to_hash
-    raise ArgumentError, 'Invalid Comment' unless valid?
+    raise InvalidComment unless valid?
 
     {
       'id' => @id,

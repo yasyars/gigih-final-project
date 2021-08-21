@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../db/db_connector'
+require_relative '../exception/hashtag_error'
 
 class Hashtag
   attr_reader :id, :word
@@ -27,8 +28,8 @@ class Hashtag
   end
 
   def save
-    raise ArgumentError, 'Invalid Hashtag' unless valid?
-    raise ArgumentError, 'Duplicate Data' unless unique?
+    raise InvalidHashtag unless valid?
+    raise DuplicateHashtag unless unique?
 
     client = create_db_client
     query = "INSERT INTO hashtags (word) VALUES ('#{@word.downcase}')"
@@ -106,7 +107,7 @@ class Hashtag
   end
 
   def to_hash
-    raise ArgumentError, 'Invalid Hashtag' unless valid?
+    raise InvalidHashtag unless valid?
 
     {
       'id' => @id,
