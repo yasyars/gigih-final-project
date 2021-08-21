@@ -135,7 +135,7 @@ describe User do
 
         user.save
 
-        expect { user.save }.to raise_error(ArgumentError, 'Duplicate Username')
+        expect { user.save }.to raise_error(DuplicateUsername)
       end
     end
 
@@ -155,29 +155,29 @@ describe User do
                           bio: 'A ruby lover || a musician'
                         })
 
-        expect { user.save }.to raise_error(ArgumentError, 'Duplicate Email')
+        expect { user.save }.to raise_error(DuplicateEmail)
       end
     end
 
     context 'when save invalid username' do
-      it 'should return error with Message "Invalid Username"' do
+      it 'should return Invalid Username error' do
         user = User.new({
                           username: ' ',
                           email: 'mery@go.round',
                           bio: 'A ruby lover || a musician'
                         })
-        expect { user.save }.to raise_error(ArgumentError, 'Invalid Username')
+        expect { user.save }.to raise_error(InvalidUsername)
       end
     end
 
     context 'when save invalid email' do
-      it 'should return error with Message "Invalid Email"' do
+      it 'should return Invalid Email error' do
         user = User.new({
                           username: 'merygoround',
                           email: '',
                           bio: 'A ruby lover || a musician'
                         })
-        expect { user.save }.to raise_error(ArgumentError, 'Invalid Email')
+        expect { user.save }.to raise_error(InvalidEmail)
       end
     end
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../db/db_connector'
+require_relative '../exception/user_error'
 
 class User
   attr_reader :id, :username, :email
@@ -14,41 +15,8 @@ class User
     @posts = param[:posts] || []
   end
 
-  def username_valid?
-    return false if @username.nil? || @username.gsub(/\s+/, '') == ''
-
-    true
-  end
-
-  def email_valid?
-    return false if @email.nil? || !!(@email !~ URI::MailTo::EMAIL_REGEXP)
-
-    true
-  end
-
-  def username_unique?
-    client = create_db_client
-    query = "SELECT COUNT(id) as count FROM users WHERE username = '#{@username}'"
-    raw_data = client.query(query)
-    client.close
-    count = raw_data.first['count']
-    count.zero?
-  end
-
-  def email_unique?
-    client = create_db_client
-    query = "SELECT COUNT(id) as count FROM users WHERE email = '#{@email}'"
-    raw_data = client.query(query)
-    client.close
-    count = raw_data.first['count']
-    count.zero?
-  end
-
   def save
-    raise ArgumentError, 'Invalid Username' unless username_valid?
-    raise ArgumentError, 'Invalid Email' unless email_valid?
-    raise ArgumentError, 'Duplicate Username' unless username_unique?
-    raise ArgumentError, 'Duplicate Email' unless email_unique?
+    raise_error_if_invalid
 
     client = create_db_client
     query = "INSERT INTO users (username,email,bio) VALUES ('#{@username}','#{@email}','#{@bio}')"
@@ -112,8 +80,8 @@ class User
   end
 
   def to_hash
-    raise ArgumentError, 'Invalid Username' unless username_valid?
-    raise ArgumentError, 'Invalid Email' unless email_valid?
+    raise InvalidUsername unless username_valid?
+    raise InvalidEmail unless email_valid?
 
     {
       'id' => @id,
@@ -121,5 +89,43 @@ class User
       'email' => @email,
       'bio' => @bio
     }
+  end
+
+
+  def username_valid?
+    return false if @username.nil? || @username.gsub(/\s+/, '') == ''
+
+    true
+  end
+
+  def email_valid?
+    return false if @email.nil? || !!(@email !~ URI::MailTo::EMAIL_REGEXP)
+
+    true
+  end
+
+  def username_unique?
+    client = create_db_client
+    query = "SELECT COUNT(id) as count FROM users WHERE username = '#{@username}'"
+    raw_data = client.query(query)
+    client.close
+    count = raw_data.first['count']
+    count.zero?
+  end
+
+  def email_unique?
+    client = create_db_client
+    query = "SELECT COUNT(id) as count FROM users WHERE email = '#{@email}'"
+    raw_data = client.query(query)
+    client.close
+    count = raw_data.first['count']
+    count.zero?
+  end
+
+  def raise_error_if_invalid
+    raise InvalidUsername unless username_valid?
+    raise InvalidEmail unless email_valid?
+    raise DuplicateUsername unless username_unique?
+    raise DuplicateEmail unless email_unique?
   end
 end

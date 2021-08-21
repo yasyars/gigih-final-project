@@ -3,7 +3,8 @@
 require_relative '../db/db_connector'
 require_relative 'user'
 require_relative 'hashtag'
-require_relative '../exception/error'
+require_relative '../exception/post_error'
+require_relative '../exception/user_error'
 
 
 class Post
