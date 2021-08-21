@@ -15,7 +15,13 @@ class CommentController
     user = User.find_by_id(params['user_id'])
     post = Post.find_by_id(params['post_id'])
     file_handler = FileHandler.new
-    path_file = file_handler.upload(params['attachment']) || nil
+    
+    if params['attachment'] 
+      path_file = file_handler.upload(params['attachment']) 
+    else
+      path_file = nil
+    end
+
     comment = Comment.new({
                             content: params['content'],
                             user: user,

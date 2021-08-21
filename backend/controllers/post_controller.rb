@@ -13,7 +13,12 @@ class PostController
   def add_post(params)
     user = User.find_by_id(params['user_id'])
     file_handler = FileHandler.new
-    path_file = file_handler.upload(params['attachment']) || nil
+    
+    if params['attachment'] 
+      path_file = file_handler.upload(params['attachment']) 
+    else
+      path_file = nil
+    end
 
     post = Post.new({
                       content: params['content'],
