@@ -378,5 +378,16 @@ describe Post do
         expect(post.attachment).to eq('domain.com/upload/file.png')
       end
     end
+
+    context 'when there is invalid attachment' do
+      it 'should set attachment to nil' do
+        post = Post.new({
+          attachment: '  '
+        })
+
+        post.set_base_url('domain.com')
+        expect(post.attachment).to be_nil
+      end
+    end
   end
 end
