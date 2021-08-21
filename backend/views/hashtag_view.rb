@@ -11,9 +11,9 @@ class HashtagView
 
   def hashtag_array(hashtags)
     response = {
-      'status': MESSAGE[:status_ok],
-      'message': MESSAGE[:get_success],
-      'data': hashtags.map(&:to_hash)
+      'status'=> MESSAGE[:status_ok],
+      'message'=> MESSAGE[:get_success],
+      'data'=> hashtags.map(&:to_hash)
     }
     response['message'] = MESSAGE[:get_not_found] if hashtags.empty?
     response.to_json

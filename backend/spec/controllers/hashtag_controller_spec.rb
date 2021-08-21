@@ -31,17 +31,18 @@ describe HashtagController do
     end
     context 'when there are some hashtags' do
       it 'should return success response with right message' do
-        stub_raw_data = [{
+        hashtags = [{
           'id': '1',
           'word': '#ootd'
         }]
-        allow(Hashtag).to receive(:find_trending).and_return(stub_raw_data)
-        response = HashtagController.find_trending
-        
+        allow(Hashtag).to receive(:find_trending).and_return(hashtags)
+        controller = HashtagController.new
+        response = controller.get_trending
+
         expected = {
-          'status' => UserView::MESSAGE[:status_ok],
-          'message' => UserView::MESSAGE[:get_success],
-          'data'=>user.to_hash
+          'status'=> HashtagView::MESSAGE[:status_ok],
+          'message'=> HashtagView::MESSAGE[:get_success],
+          'data'=> hashtags.map(&:to_hash)
         }.to_json
 
         expect(response).to eq(expected)
