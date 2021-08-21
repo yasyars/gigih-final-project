@@ -58,7 +58,11 @@ This app handles simple activity in social media. This app able to handle:
    bundle install
    ```
 
-3. Add .env file with the .env.template structure. Adjust the variable field to your own environment. For local environment the DB_HOST could be 127.0.0.1 or localhost.
+3. Add .env file with the .env.template structure. Adjust the variable field to your own environment. For local environment the DB_HOST could be 127.0.0.1 or localhost. Source the .env file for the env variables.
+
+   ```
+   source .env
+   ```
 
 4. Run test suites using rspec
    ```

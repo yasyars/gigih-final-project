@@ -29,25 +29,23 @@ describe HashtagController do
         expect(response).to eq(expected)
       end
     end
-    # context 'when there are some hashtags' do
-    #   it 'should return success response with right message' do
-    #     user = double
-    #     allow(user).to receive(:to_hash).and_return({
-    #       'id' => 1,
-    #       'username' => 'merygoround',
-    #       'email' => 'mery@go.round',
-    #       'bio' => 'A ruby lover'
-    #     })
+    context 'when there are some hashtags' do
+      it 'should return success response with right message' do
+        stub_raw_data = [{
+          'id': '1',
+          'word': '#ootd'
+        }]
+        allow(Hashtag).to receive(:find_trending).and_return(stub_raw_data)
+        response = HashtagController.find_trending
+        
+        expected = {
+          'status' => UserView::MESSAGE[:status_ok],
+          'message' => UserView::MESSAGE[:get_success],
+          'data'=>user.to_hash
+        }.to_json
 
-    #     allow(User).to receive(:find_by_username).with('merygoround').and_return(user)
-
-    #     expected = {
-    #       'status' => UserView::MESSAGE[:status_ok],
-    #       'message' => UserView::MESSAGE[:get_success],
-    #       'data'=>user.to_hash
-    #     }.to_json
-    #     expect(response).to eq(expected)
-    #   end
-    # end
+        expect(response).to eq(expected)
+      end
+    end
   end
 end
