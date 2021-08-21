@@ -8,7 +8,7 @@ class PostView
     status_ok: 'success',
     create_success: 'Post successfully created',
     get_success: 'Post data retrieved succesfully',
-    get_not_found: 'Post data not found'
+    get_not_found: 'No post matched'
   }.freeze
 
   def create_success

@@ -6,7 +6,8 @@ require 'json'
 class HashtagView
   MESSAGE = {
     status_ok: 'success',
-    get_success: 'Hashtag data retrieved succesfully'
+    get_success: 'Hashtag data retrieved succesfully',
+    get_not_found: 'No hashtag matched'
   }.freeze
 
   def hashtag_array(hashtags)

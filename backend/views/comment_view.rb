@@ -8,7 +8,7 @@ class CommentView
     status_ok: 'success',
     create_success: 'Comment successfully created',
     get_success: 'Comment data retrieved succesfully',
-    get_not_found: 'Comment data not found'
+    get_not_found: 'No comment matched'
   }.freeze
 
   def create_success
