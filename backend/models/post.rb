@@ -90,7 +90,7 @@ class Post
 
   def self.find_by_hashtag_word(word)
     client = create_db_client
-    query = "SELECT posts.id , posts.content , posts.user_id , posts.attachment FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
+    query = "SELECT posts.id , posts.content , posts.user_id , posts.attachment, posts.timestamp FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
     raw_data = client.query(query)
     client.close
     return [] if raw_data.count.zero?

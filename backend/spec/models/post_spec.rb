@@ -283,7 +283,7 @@ describe Post do
       it 'should return array with two member' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query = "SELECT posts.id , posts.content , posts.user_id , posts.attachment FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
+        stub_query = "SELECT posts.id , posts.content , posts.user_id , posts.attachment, posts.timestamp FROM posts JOIN posts_hashtags ON posts.id = posts_hashtags.post_id JOIN hashtags ON posts_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
         stub_raw_data_post = [{
           'id' => 1,
           'content' => '#ootd yey',

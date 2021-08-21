@@ -231,7 +231,7 @@ describe Comment do
       it 'should return array with members' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query = "SELECT * FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
+        stub_query = "SELECT comments.id , comments.content , comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
         stub_raw_data_comment = [{
           'id' => 1,
           'content' => '#ootd yey',
