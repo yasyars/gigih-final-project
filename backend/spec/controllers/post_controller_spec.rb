@@ -76,7 +76,7 @@ describe PostController do
                                                       'id' => 1,
                                                       'content' => 'Hai semuanya #ootd',
                                                       'user' => user.to_hash,
-                                                      'attachment' => 'data/file.png'
+                                                      'attachment' => nil
                                                     })
 
         response = controller.get_post_by_hashtag('#ootd', 'http://localhost:4567')

@@ -7,7 +7,7 @@ require_relative './controllers/post_controller'
 require_relative './controllers/comment_controller'
 require_relative './controllers/hashtag_controller'
 
-set :show_exceptions, false
+# set :show_exceptions, false
 
 error ArgumentError do
   status 400
