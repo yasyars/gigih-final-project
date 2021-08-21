@@ -3,6 +3,8 @@
 require_relative '../db/db_connector'
 require_relative 'user'
 require_relative 'hashtag'
+require_relative '../exception/error'
+
 
 class Post
   attr_reader :id, :content, :user, :attachment, :timestamp, :hashtags
@@ -17,7 +19,7 @@ class Post
   end
 
   def valid?
-    @content.length <= 1000 && @content.gsub(/\s+/, '') != '' && !@user.nil?
+    @content.length <= 1000 && @content.gsub(/\s+/, '') != ''
   end
 
   def extract_hashtag
@@ -27,7 +29,8 @@ class Post
   end
 
   def save
-    raise ArgumentError, 'Invalid Post' unless valid?
+    raise InvalidPost unless valid?
+    raise UserNotFound if @user.nil?
 
     client = create_db_client
     query = "INSERT INTO posts (content, user_id, attachment) VALUES ('#{@content}', #{@user.id}, '#{@attachment}')"
@@ -110,8 +113,8 @@ class Post
   end
 
   def to_hash
-    raise ArgumentError, 'Invalid Comment' unless valid?
-
+    raise InvalidPost unless valid?
+    raise UserNotFound if @user.nil?
     {
       'id' => @id.to_i,
       'content' => @content,

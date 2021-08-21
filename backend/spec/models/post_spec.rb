@@ -163,7 +163,7 @@ describe Post do
                             attachment: @attachment_str
                           })
 
-          expect { post.save }.to raise_error(ArgumentError, 'Invalid Post')
+          expect { post.save }.to raise_error(InvalidPost)
         end
       end
     end

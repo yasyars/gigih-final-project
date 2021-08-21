@@ -9,10 +9,14 @@ require_relative './controllers/hashtag_controller'
 
 set :show_exceptions, false
 
-error ArgumentError do
+error do
   status 400
-  { 'status' => 'error',
-    'message' => env['sinatra.error'].message }.to_json
+  { 'status' => 'fail',
+    'error'  => {
+      'type'=> env['sinatra.error'].class,
+      'message' => env['sinatra.error'].message 
+    }
+  }.to_json
 end
 
 post '/user' do
