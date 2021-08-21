@@ -122,7 +122,7 @@ class Post
   end
 
   def set_domain_attachment(domain) 
-    unless @attachment.nil?
+    unless @attachment.nil? && @attachment.gsub(/\s+/, '')
       @attachment = "#{domain}/#{@attachment}"
     end 
     self
