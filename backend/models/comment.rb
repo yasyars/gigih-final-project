@@ -2,6 +2,8 @@
 
 require_relative '../db/db_connector'
 require_relative '../exception/comment_error'
+require_relative '../exception/post_error'
+require_relative '../exception/user_error'
 require_relative 'post'
 
 class Comment < Post
@@ -10,12 +12,10 @@ class Comment < Post
     @post = param[:post]
   end
 
-  def valid?
-    super && !@post.nil?
-  end
-
   def save
     raise InvalidComment unless valid?
+    raise UserNotFound if @user.nil?
+    raise PostNotFound if @post.nil?
 
     client = create_db_client
     query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES ('#{@content}', #{@user.id}, #{@post.id}, '#{@attachment}')"
@@ -83,7 +83,7 @@ class Comment < Post
 
   def to_hash
     raise InvalidComment unless valid?
-
+    raise PostNotFound if @post.nil?
     {
       'id' => @id,
       'content' => @content,

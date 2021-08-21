@@ -73,19 +73,6 @@ class User
     get_array_from_query_result(raw_data)
   end
 
-  def to_hash
-    raise InvalidUsername unless username_valid?
-    raise InvalidEmail unless email_valid?
-
-    {
-      'id' => @id,
-      'username' => @username,
-      'email' => @email,
-      'bio' => @bio
-    }
-  end
-
-
   def username_valid?
     return false if @username.nil? || @username.gsub(/\s+/, '') == ''
 
@@ -121,5 +108,17 @@ class User
     raise InvalidEmail unless email_valid?
     raise DuplicateUsername unless username_unique?
     raise DuplicateEmail unless email_unique?
+  end
+
+  def to_hash
+    raise InvalidUsername unless username_valid?
+    raise InvalidEmail unless email_valid?
+
+    {
+      'id' => @id,
+      'username' => @username,
+      'email' => @email,
+      'bio' => @bio
+    }
   end
 end
