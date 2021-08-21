@@ -8,11 +8,10 @@ class User
   attr_accessor :posts, :bio
 
   def initialize(param)
-    @id = param[:id] ? param[:id] : nil
+    @id = param[:id]
     @username = param[:username]
     @email = param[:email]
-    @bio = param[:bio] || ''
-    @posts = param[:posts] || []
+    @bio = param[:bio]
   end
 
   def save
@@ -24,12 +23,7 @@ class User
     client.close
   end
 
-  def self.find_by_id(id)
-    client = create_db_client
-    query = "SELECT * FROM users WHERE id= #{id}"
-    raw_data = client.query(query)
-    client.close
-
+  def self.get_object_from_query_result(raw_data)
     return nil if raw_data.count.zero?
 
     data = raw_data.first
@@ -39,6 +33,14 @@ class User
                email: data['email'],
                bio: data['bio']
              })
+  end
+
+  def self.find_by_id(id)
+    client = create_db_client
+    query = "SELECT * FROM users WHERE id= #{id}"
+    raw_data = client.query(query)
+    client.close
+    get_object_from_query_result(raw_data)
   end
 
   def self.find_by_username(username)
@@ -46,26 +48,10 @@ class User
     query = "SELECT * FROM users WHERE username = '#{username}'"
     raw_data = client.query(query)
     client.close
-
-    return nil if raw_data.count.zero?
-
-    data = raw_data.first
-    User.new({
-               id: data['id'],
-               username: data['username'],
-               email: data['email'],
-               bio: data['bio']
-             })
+    get_object_from_query_result(raw_data)
   end
 
-  def self.find_all
-    client = create_db_client
-    query = 'SELECT * FROM users'
-    raw_data = client.query(query)
-    client.close
-
-    return [] if raw_data.count.zero?
-
+  def self.get_array_from_query_result(raw_data)
     users = []
     raw_data.each do |data|
       user = User.new({
@@ -77,6 +63,14 @@ class User
       users.push(user)
     end
     users
+  end
+
+  def self.find_all
+    client = create_db_client
+    query = 'SELECT * FROM users'
+    raw_data = client.query(query)
+    client.close
+    get_array_from_query_result(raw_data)
   end
 
   def to_hash

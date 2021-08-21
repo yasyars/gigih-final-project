@@ -13,20 +13,6 @@ class Hashtag
     @posts = param[:posts] || []
   end
 
-  def valid?
-    word_pattern = /^#\S+$/
-    !@word.nil? && @word.gsub(/\s+/, '') != '' && !!(@word =~ word_pattern)
-  end
-
-  def unique?
-    client = create_db_client
-    query = "SELECT COUNT(id) as count FROM hashtags WHERE word = '#{@word.downcase}'"
-    raw_data = client.query(query)
-    client.close
-    count = raw_data.first['count']
-    count.zero?
-  end
-
   def save
     raise InvalidHashtag unless valid?
     raise DuplicateHashtag unless unique?
@@ -113,5 +99,19 @@ class Hashtag
       'id' => @id,
       'word' => @word.downcase
     }
+  end
+
+  def valid?
+    word_pattern = /^#\S+$/
+    !@word.nil? && @word.gsub(/\s+/, '') != '' && !!(@word =~ word_pattern)
+  end
+
+  def unique?
+    client = create_db_client
+    query = "SELECT COUNT(id) as count FROM hashtags WHERE word = '#{@word.downcase}'"
+    raw_data = client.query(query)
+    client.close
+    count = raw_data.first['count']
+    count.zero?
   end
 end
