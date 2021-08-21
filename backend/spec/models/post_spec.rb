@@ -5,7 +5,7 @@ require_relative '../../models/post'
 require_relative '../../models/hashtag'
 
 describe Post do
-  before [:each] do
+  before (:each) do
     client = create_db_client
     client.query('SET FOREIGN_KEY_CHECKS = 0')
     client.query('TRUNCATE TABLE posts')
@@ -122,7 +122,7 @@ describe Post do
   end
 
   describe '.save' do
-    before(:each) do
+    before [:each] do
       @user = double
       @content_str = 'Hai semuanya, bagus gak pakaianku?'
       @attachment_str = '../upload/post123.jpg'
@@ -308,6 +308,33 @@ describe Post do
     end
   end
 
+  describe '.find_comment_by_hashtag_word' do
+    before [:each] do
+      @post = Post.new({
+                         id: 1,
+                         content: @content_str,
+                         user: @user,
+                         attachment: @attachment_str
+                       })
+      allow(@user).to receive(:id).and_return(1)
+      @stub_client = double
+      allow(Mysql2::Client).to receive(:new).and_return(@stub_client)
+      allow(@stub_client).to receive(:close)
+    end
+
+    context 'when there are no result' do
+      it 'should return empty array' do
+        word = '#ootd'
+        post_id =1
+        stub_raw_data = []
+        query_stub = "SELECT comments.id , comments.content , comments.post_id, comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}' AND comments.post_id = #{post_id}"
+        allow(@stub_client).to receive(:query).with(query_stub).and_return(stub_raw_data)
+
+        expect(@post.find_comment_by_hashtag_word('#ootd')).to eq([])
+      end
+    end
+  end
+
   describe '.to_hash' do
     context 'when initialized with valid object' do
       it 'should return expected map' do
@@ -336,6 +363,19 @@ describe Post do
         }
 
         expect(post_hash).to eq(expected_hash)
+      end
+    end
+  end
+
+  describe '.set_base_url' do
+    context 'when there is valid attachment' do
+      it 'should concate succesfully' do
+        post = Post.new({
+          attachment: 'upload/file.png'
+        })
+
+        post.set_base_url('domain.com')
+        expect(post.attachment).to eq('domain.com/upload/file.png')
       end
     end
   end
