@@ -16,7 +16,7 @@ describe Comment do
     client.close
   end
 
-  describe '#valid?' do
+  describe '.valid?' do
     context 'when initialized with space only' do
       it 'should return false' do
         user = double
@@ -77,7 +77,7 @@ describe Comment do
     end
   end
 
-  describe '#extract_hashtag' do
+  describe '.extract_hashtag' do
     context 'when initialized with no hashtag' do
       it 'should return empty array' do
         user = double
@@ -139,7 +139,7 @@ describe Comment do
     end
   end
 
-  describe '#save' do
+  describe '.save' do
     before(:each) do
       @user = double
       @content_str = 'Hai semuanya, bagus gak pakaianku?'
@@ -172,7 +172,7 @@ describe Comment do
     context 'when save with hashtag' do
       it 'should succesfully save object' do
         expect(@stub_client).to receive(:query).with(@stub_query)
-        expect(@comment).to receive(:save_with_hashtags)
+        expect(@comment).to receive(:save_hashtags)
         @comment.save
       end
     end
@@ -191,7 +191,7 @@ describe Comment do
     end
   end
 
-  describe '#save_with_hashtags' do
+  describe '.save_hashtags' do
     context 'when save post with a hashtag' do
       it 'should sucessfully insert posts with hashtags' do
         user = double
@@ -215,12 +215,12 @@ describe Comment do
         expect(stub_client).to receive(:query).with(stub_query)
         allow(stub_client).to receive(:close)
 
-        comment.save_with_hashtags
+        comment.save_hashtags
       end
     end
   end
 
-  describe '#find_by_hashtag_word' do
+  describe '.find_by_hashtag_word' do
     context 'when there is no comment that matches' do
       it 'should return empty array' do
         res = Comment.find_by_hashtag_word('#ootd')
@@ -232,7 +232,7 @@ describe Comment do
       it 'should return array with members' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query = "SELECT comments.id , comments.content , comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
+        stub_query = "SELECT comments.id , comments.content , comments.post_id, comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#ootd'"
         stub_raw_data_comment = [{
           'id' => 1,
           'content' => '#ootd yey',
@@ -264,10 +264,10 @@ describe Comment do
     end
   end
 
-  describe '#find_by_id' do
+  describe '.find_by_post' do
     context 'when there is no post that matches' do
       it 'should return empty array' do
-        res = Comment.find_by_id(1)
+        res = Comment.find_by_post_id(1)
         expect(res).to eq([])
       end
     end
@@ -276,7 +276,7 @@ describe Comment do
       it 'should return array with members' do
         stub_client = double
         allow(Mysql2::Client).to receive(:new).and_return(stub_client)
-        stub_query = 'SELECT * FROM comments WHERE id = 1'
+        stub_query = 'SELECT * FROM comments WHERE post_id = 1'
         stub_raw_data_post = [{
           'id' => 1,
           'content' => '#ootd yey',
@@ -301,13 +301,13 @@ describe Comment do
 
         allow(stub_client).to receive(:close)
 
-        res = Comment.find_by_id(1)
+        res = Comment.find_by_post_id(1)
         expect(res.size).to eq(2)
       end
     end
   end
 
-  describe '#to_hash' do
+  describe '.to_hash' do
     context 'when initialized with valid object' do
       it 'should return expected map' do
         user = double
@@ -320,7 +320,8 @@ describe Comment do
                                 content: '#haha hahaha',
                                 user: user,
                                 post: post,
-                                attachment: 'data/asset/file.png'
+                                attachment: 'data/asset/file.png',
+                                hashtags:[]
                               })
 
         comment_hash = comment.to_hash
@@ -330,7 +331,8 @@ describe Comment do
           'user' => {},
           'post' => {},
           'attachment' => 'data/asset/file.png',
-          'timestamp' => nil
+          'timestamp' => nil,
+          'hashtags' => []
         }
 
         expect(comment_hash).to eq(expected_hash)

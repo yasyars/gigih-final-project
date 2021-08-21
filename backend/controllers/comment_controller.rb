@@ -3,6 +3,7 @@
 require_relative '../models/comment'
 require_relative '../models/post'
 require_relative '../models/user'
+require_relative '../exception/post_error'
 require_relative '../views/comment_view'
 require_relative '../helper/file_handler'
 
@@ -33,18 +34,20 @@ class CommentController
   end
 
   def get_comment(params)
-    word = params['word']
+    word = params['hashtag']
     if word.nil?
-      post = Comment.find_by_id(params['post_id'])
-      @response.post_array(post.comments)
+      comment = Comment.find_by_post_id(params['post_id'])
+      @response.comment_array(comment)
     else
-      get_comment_by_hashtag(word)
+      get_comment_by_hashtag(params)
     end
   end
 
-  def get_comment_by_hashtag(word)
+  def get_comment_by_hashtag(params)
     response = CommentView.new
-    comments = Comment.find_by_hashtag_word(word)
+    post = Post.find_by_id(params['post_id'])
+    raise PostNotFound if post.nil?
+    comments = post.find_comment_by_hashtag_word(params['hashtag'])
     @response.comment_array(comments)
   end
 end

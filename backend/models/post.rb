@@ -112,6 +112,14 @@ class Post
     get_array_from_query_result(raw_data)
   end
 
+  def find_comment_by_hashtag_word(word)
+    client = create_db_client
+    query = "SELECT comments.id , comments.content , comments.post_id, comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}' AND comments.post_id = #{@id}"
+    raw_data = client.query(query)
+    client.close
+    Comment.get_array_from_query_result(raw_data)
+  end
+
   def to_hash
     raise_error_if_invalid
     {

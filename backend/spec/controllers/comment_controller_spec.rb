@@ -4,6 +4,8 @@ require_relative '../../db/db_connector'
 require_relative '../../controllers/comment_controller'
 require_relative '../../views/comment_view'
 require_relative '../../models/comment'
+require_relative '../../models/post'
+
 require 'json'
 
 describe CommentController do
@@ -15,7 +17,7 @@ describe CommentController do
     client.close
   end
 
-  describe '#add_comment' do
+  describe '.add_comment' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = CommentController.new
@@ -56,31 +58,25 @@ describe CommentController do
     end
   end
 
-  describe '#get_comment_by_hashtag_word' do
+  describe '.get_comment_by_hashtag_word' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = CommentController.new
-        comment = double
-        user = double
-        allow(user).to receive(:to_hash).and_return({
-                                                      'id' => 1,
-                                                      'username' => 'merygorund',
-                                                      'email' => 'mery@go.round',
-                                                      'bio' => 'A ruby lover'
-                                                    })
-        allow(Comment).to receive(:find_by_hashtag_word).and_return([comment])
-        allow(comment).to receive(:to_hash).and_return({
-                                                         'id' => 1,
-                                                         'content' => 'Hai semuanya #ootd',
-                                                         'user' => user.to_hash,
-                                                         'attachment' => 'data/file.png'
-                                                       })
 
-        response = controller.get_comment_by_hashtag('#ootd')
+        params = {
+          'hashtag'=> '#ootd',
+          'post_id' => '1'
+        }
+                                                
+        post = double
+        allow(Post).to receive(:find_by_id).with(params['post_id']).and_return(post)
+        allow(post).to receive(:find_comment_by_hashtag_word).with(params['hashtag']).and_return([])
+
+        response = controller.get_comment_by_hashtag(params)
         expected_json = response = {
           'status' => CommentView::MESSAGE[:status_ok],
-          'message' => CommentView::MESSAGE[:get_success],
-          'data' => [comment.to_hash]
+          'message' => CommentView::MESSAGE[:get_not_found],
+          'data' => []
         }.to_json
 
         expect(response).to eq(expected_json)

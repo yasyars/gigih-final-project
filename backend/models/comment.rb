@@ -12,21 +12,24 @@ class Comment < Post
     @post = param[:post]
   end
 
-  def save
+  def raise_error_if_invalid
     raise InvalidComment unless valid?
     raise UserNotFound if @user.nil?
     raise PostNotFound if @post.nil?
+  end
 
+  def save
+    raise_error_if_invalid
     client = create_db_client
     query = "INSERT INTO comments (content, user_id, post_id, attachment) VALUES ('#{@content}', #{@user.id}, #{@post.id}, '#{@attachment}')"
     puts query
     client.query(query)
     @id = client.last_id
     client.close
-    save_with_hashtags
+    save_hashtags
   end
 
-  def save_with_hashtags
+  def save_hashtags
     client = create_db_client
     hashtags = extract_hashtag
     hashtags.each do |word|
@@ -39,31 +42,21 @@ class Comment < Post
 
   def self.find_by_hashtag_word(word)
     client = create_db_client
-    query = "SELECT comments.id , comments.content , comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
+    query = "SELECT comments.id , comments.content , comments.post_id, comments.user_id , comments.attachment, comments.timestamp FROM comments JOIN comments_hashtags ON comments.id = comments_hashtags.comment_id JOIN hashtags ON comments_hashtags.hashtag_id = hashtags.id WHERE hashtags.word= '#{word}'"
     raw_data = client.query(query)
     client.close
-    return [] if raw_data.count.zero?
-
-    comments = []
-    raw_data.each do |data|
-      comment = Comment.new({
-                              id: data['id'],
-                              content: data['content'],
-                              user: User.find_by_id(data['user_id']),
-                              post: Post.find_by_id(data['post_id']),
-                              attachment: data['attachment'],
-                              timestamp: data['timestamp']
-                            })
-      comments.push(comment)
-    end
-    comments
+    get_array_from_query_result(raw_data)
   end
 
-  def self.find_by_id(id)
+  def self.find_by_post_id(post_id)
     client = create_db_client
-    query = "SELECT * FROM comments WHERE id = #{id}"
+    query = "SELECT * FROM comments WHERE post_id = #{post_id}"
     raw_data = client.query(query)
     client.close
+    get_array_from_query_result(raw_data)
+  end
+
+  def self.get_array_from_query_result(raw_data)
     return [] if raw_data.count.zero?
 
     comments = []
@@ -76,21 +69,22 @@ class Comment < Post
                               attachment: data['attachment'],
                               timestamp: data['timestamp']
                             })
+      comment.hashtags = comment.extract_hashtag
       comments.push(comment)
     end
     comments
   end
 
   def to_hash
-    raise InvalidComment unless valid?
-    raise PostNotFound if @post.nil?
+    raise_error_if_invalid
     {
       'id' => @id,
       'content' => @content,
       'user' => @user.to_hash,
       'post' => @post.to_hash,
       'attachment' => @attachment,
-      'timestamp' => @timestamp
+      'timestamp' => @timestamp,
+      'hashtags' => @hashtags
     }
   end
 end

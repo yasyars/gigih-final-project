@@ -38,7 +38,7 @@ post '/post' do
 end
 
 get '/post' do
-  word = params['hashtag'] || nil
+  word = params['hashtag']
   controller = PostController.new
   status 200
   controller.get_post(word, request.base_url)
@@ -48,6 +48,12 @@ get '/hashtag/trending' do
   controller = HashtagController.new
   status 200
   controller.get_trending
+end
+
+get '/post/:post_id/comment' do
+  controller = CommentController.new
+  status 200
+  controller.get_comment(params)
 end
 
 post '/post/:post_id/comment' do
