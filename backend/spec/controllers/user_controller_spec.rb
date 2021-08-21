@@ -14,7 +14,7 @@ describe UserController do
     client.close
   end
 
-  describe '#register' do
+  describe '.register' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = UserController.new
@@ -38,7 +38,7 @@ describe UserController do
     end
   end
 
-  describe '#get_user_by_username' do
+  describe '.get_user_by_username' do
     describe 'when given valid params' do
       let(:controller) { UserController.new }
       let(:params) do

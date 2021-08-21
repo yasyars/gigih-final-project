@@ -12,7 +12,7 @@ describe User do
     client.close
   end
 
-  describe '#username_valid?' do
+  describe '.username_valid?' do
     context 'when initialized with valid input' do
       it 'should return true' do
         user = User.new({
@@ -34,7 +34,7 @@ describe User do
     end
   end
 
-  describe '#email_valid?' do
+  describe '.email_valid?' do
     context 'when initialized with valid email' do
       it 'should return true' do
         user = User.new({
@@ -68,7 +68,7 @@ describe User do
     end
   end
 
-  describe '#username_unique' do
+  describe '.username_unique' do
     context 'when initialized with unique values' do
       it 'should return true' do
         user = User.new({
@@ -96,7 +96,7 @@ describe User do
     end
   end
 
-  describe '#email_unique?' do
+  describe '.email_unique?' do
     context 'when initialized with unique email' do
       it 'should return true' do
         user = User.new({
@@ -124,7 +124,7 @@ describe User do
     end
   end
 
-  describe '#save' do
+  describe '.save' do
     context 'when save non unique username' do
       it 'should return error with Message "Duplicate Username"' do
         user = User.new({
@@ -203,7 +203,7 @@ describe User do
     end
   end
 
-  describe '#find_by_id' do
+  describe '.find_by_id' do
     context 'when find non existent object' do
       it 'should return nil' do
         user = User.find_by_id(1)
@@ -237,7 +237,7 @@ describe User do
     end
   end
 
-  describe '#find_by_username' do
+  describe '.find_by_username' do
     context 'when find non existent object' do
       it 'should return nil' do
         user = User.find_by_username('merygoround')
@@ -268,7 +268,7 @@ describe User do
     end
   end
 
-  describe '#find_all' do
+  describe '.find_all' do
     context 'when no user at all' do
       it 'should return empty array' do
         user = User.find_all
@@ -306,7 +306,7 @@ describe User do
     end
   end
 
-  describe '#to_hash' do
+  describe '.to_hash' do
     context 'when initialized with valid object' do
       it 'should return expected map' do
         username_str = 'nana'

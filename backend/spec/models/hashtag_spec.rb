@@ -13,7 +13,7 @@ describe Hashtag do
     client.close
   end
 
-  describe '#valid?' do
+  describe '.valid?' do
     context 'when initialized with valid input' do
       it 'should return true' do
         hashtag = Hashtag.new({
@@ -47,7 +47,7 @@ describe Hashtag do
     end
   end
 
-  describe '#unique?' do
+  describe '.unique?' do
     context 'when initialized with unique values' do
       it 'should return true' do
         hashtag = Hashtag.new({
@@ -73,7 +73,7 @@ describe Hashtag do
     end
   end
 
-  describe '#save' do
+  describe '.save' do
     context 'when save non unique data' do
       it 'should return error with message Duplicate Data' do
         hashtag = Hashtag.new({
@@ -113,7 +113,7 @@ describe Hashtag do
     end
   end
 
-  describe '#save_or_find' do
+  describe '.save_or_find' do
     context 'when initialized with unique hashtag' do
       it 'should save hashtag' do
         hashtag = double
@@ -140,7 +140,7 @@ describe Hashtag do
     end
   end
 
-  describe '#find_by_id' do
+  describe '.find_by_id' do
     context 'when find non existent object' do
       it 'should return nil' do
         hashtag = Hashtag.find_by_id(1)
@@ -170,7 +170,7 @@ describe Hashtag do
     end
   end
 
-  describe '#find_by_word' do
+  describe '.find_by_word' do
     context 'when find non existent object' do
       it 'should return nil' do
         hashtag = Hashtag.find_by_word('#nono')
@@ -202,7 +202,7 @@ describe Hashtag do
     end
   end
 
-  describe '#find_trending' do
+  describe '.find_trending' do
     context 'when find non existent object' do
       it 'should return empty array' do
         hashtag = Hashtag.find_trending
@@ -259,7 +259,7 @@ describe Hashtag do
     end
   end
 
-  describe '#to_hash' do
+  describe '.to_hash' do
     context 'when initialized with valid object' do
       it 'should return expected map' do
         hashtag = Hashtag.new({

@@ -14,7 +14,7 @@ describe HashtagController do
     client.close
   end
 
-  describe '#get_trending' do
+  describe '.get_trending' do
     let(:controller) { HashtagController.new }
     let(:response) { controller.get_trending }
 
@@ -29,6 +29,7 @@ describe HashtagController do
         expect(response).to eq(expected)
       end
     end
+    
     context 'when there are some hashtags' do
       it 'should return success response with right message' do
         hashtags = [{

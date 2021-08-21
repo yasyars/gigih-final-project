@@ -17,7 +17,7 @@ describe PostController do
     client.close
   end
 
-  describe '#add_post' do
+  describe '.add_post' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = PostController.new
@@ -55,7 +55,7 @@ describe PostController do
     end
   end
 
-  describe '#get_post_by_hashtag' do
+  describe '.get_post_by_hashtag' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = PostController.new
