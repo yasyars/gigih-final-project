@@ -13,7 +13,7 @@ This app handles simple activity in social media. This app able to handle:
 - User can comment on a post
 - Post and comment can contain a file attachment
 
-## Database Schmea
+## Database Schema
 
 ![db_schema](doc/db_schema.png)
 
@@ -21,7 +21,7 @@ This app handles simple activity in social media. This app able to handle:
 
 ```
 ├── backend : the root folder where the app is running
-│   ├── controllers : contains of controller file that manage  model and  view
+│   ├── controllers : contains controller file that manage  model and  view
 │   ├── db : contains sql file for database and file to integrate the app with mysql
 │   ├── helper : function for file handling
 │   ├── models : represent the app data model
@@ -30,7 +30,7 @@ This app handles simple activity in social media. This app able to handle:
 │   └── views : contains file that manages the response view for the API
 └── doc
     ├── Postman Collection : contains a postman collection that can be run to test the API
-    │   └── env domain : domain url that can be used to run the post man. There are two domain, use development env to use localhost:4567 as the domain
+    │   └── env domain : domain url that can be used to run the post man. There are two domain, use development env to make the localhost:4567 as the domain
     └── db_schema.png : ER diagram of database used in backend app
 ```
 
