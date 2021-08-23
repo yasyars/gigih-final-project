@@ -7,7 +7,7 @@ class Hashtag
   attr_reader :id, :word
 
   def initialize(param)
-    @id = param[:id].to_i ? param[:id] : nil
+    @id = param[:id]
     @word = param[:word]
     @comments = param[:comments] || []
     @posts = param[:posts] || []
