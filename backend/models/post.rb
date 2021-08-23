@@ -3,36 +3,18 @@
 require_relative '../db/db_connector'
 require_relative 'user'
 require_relative 'hashtag'
+require_relative 'content'
 require_relative '../exception/post_error'
 require_relative '../exception/user_error'
 
 
-class Post
-  attr_reader :id, :content, :user, :attachment, :timestamp, :hashtags
+class Post < Content
+  attr_reader :id, :content, :attachment, :timestamp
   attr_accessor :hashtags
   
-  def initialize(param)
-    @id = param[:id]
-    @content = param[:content]
-    @user = param[:user]
-    @attachment = param[:attachment]
-    @timestamp = param[:timestamp]
-    @hashtags = param[:hashtags] || []
-  end
-
-  def valid?
-    @content.length <= 1000 && @content.gsub(/\s+/, '') != ''
-  end
-
-  def extract_hashtag
-    hashtag_pattern = /#\S+/
-    hashtags = @content.downcase.scan(hashtag_pattern)
-    hashtags.uniq
-  end
-
   def raise_error_if_invalid
+    super
     raise InvalidPost unless valid?
-    raise UserNotFound if @user.nil?
   end
 
   def save
@@ -118,25 +100,5 @@ class Post
     raw_data = client.query(query)
     client.close
     Comment.get_array_from_query_result(raw_data)
-  end
-
-  def to_hash
-    raise_error_if_invalid
-    {
-      'id' => @id.to_i,
-      'content' => @content,
-      'user' => @user.to_hash,
-      'attachment' => @attachment,
-      'timestamp' => @timestamp,
-      'hashtags' => @hashtags
-    }
-  end
-
-  def set_base_url(domain) 
-    unless @attachment.nil? || @attachment.gsub(/\s+/, '')==""
-      @attachment = "#{domain}/#{@attachment}"
-    else
-      @attachment = nil
-    end
   end
 end

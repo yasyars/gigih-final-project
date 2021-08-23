@@ -1,37 +1,23 @@
 # frozen_string_literal: true
 
 require_relative '../db/db_connector'
+require_relative 'content'
 require_relative '../exception/comment_error'
 require_relative '../exception/post_error'
 require_relative '../exception/user_error'
 
-class Comment
+class Comment < Content
   attr_accessor :hashtags
 
   def initialize(param)
-    @id = param[:id]
-    @content = param[:content]
-    @user = param[:user]
-    @attachment = param[:attachment]
-    @timestamp = param[:timestamp]
-    @hashtags = param[:hashtags] || []
+    super(param)
     @post = param[:post]
   end
 
-  def valid?
-    @content.length <= 1000 && @content.gsub(/\s+/, '') != ''
-  end
-
-  def extract_hashtag
-    hashtag_pattern = /#\S+/
-    hashtags = @content.downcase.scan(hashtag_pattern)
-    hashtags.uniq
-  end
-
   def raise_error_if_invalid
-    raise InvalidComment unless valid?
-    raise UserNotFound if @user.nil?
+    super
     raise PostNotFound if @post.nil?
+    raise InvalidComment unless valid?
   end
 
   def save
@@ -92,15 +78,8 @@ class Comment
   end
 
   def to_hash
-    raise_error_if_invalid
-    {
-      'id' => @id,
-      'content' => @content,
-      'user' => @user.to_hash,
-      'post' => @post.to_hash,
-      'attachment' => @attachment,
-      'timestamp' => @timestamp,
-      'hashtags' => @hashtags
-    }
+    hash = super
+    hash['post'] = @post.to_hash
+    hash
   end
 end
