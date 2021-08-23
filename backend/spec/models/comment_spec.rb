@@ -330,7 +330,6 @@ describe Comment do
           'id' => 1,
           'content' => '#haha hahaha',
           'user' => {},
-          'post' => {},
           'attachment' => 'data/asset/file.png',
           'timestamp' => nil,
           'hashtags' => []

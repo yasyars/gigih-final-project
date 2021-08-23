@@ -65,7 +65,7 @@ describe CommentController do
         allow(Post).to receive(:find_by_id).with(params['post_id']).and_return(post)
         allow(post).to receive(:find_comment_by_hashtag_word).with(params['hashtag']).and_return([])
 
-        response = controller.get_comment_by_hashtag(params)
+        response = controller.get_comment_by_hashtag(params,'localhost')
         expected_json = response = {
           'status' => CommentView::MESSAGE[:status_ok],
           'message' => CommentView::MESSAGE[:get_not_found],
