@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'json'
+require 'dotenv/load'
 require_relative './controllers/user_controller'
 require_relative './controllers/post_controller'
 require_relative './controllers/comment_controller'
@@ -53,7 +54,7 @@ end
 get '/post/:post_id/comment' do
   controller = CommentController.new
   status 200
-  controller.get_comment(params)
+  controller.get_comment(params,request.base_url)
 end
 
 post '/post/:post_id/comment' do

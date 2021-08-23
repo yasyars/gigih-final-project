@@ -33,7 +33,7 @@ class CommentController
     @response.create_success
   end
 
-  def get_comment(params)
+  def get_comment(params, domain)
     word = params['hashtag']
     if word.nil?
       comment = Comment.find_by_post_id(params['post_id'])
@@ -48,6 +48,7 @@ class CommentController
     post = Post.find_by_id(params['post_id'])
     raise PostNotFound if post.nil?
     comments = post.find_comment_by_hashtag_word(params['hashtag'])
+     
     @response.comment_array(comments)
   end
 end

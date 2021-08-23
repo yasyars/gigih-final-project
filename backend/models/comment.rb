@@ -4,12 +4,28 @@ require_relative '../db/db_connector'
 require_relative '../exception/comment_error'
 require_relative '../exception/post_error'
 require_relative '../exception/user_error'
-require_relative 'post'
 
-class Comment < Post
+class Comment
+  attr_accessor :hashtags
+
   def initialize(param)
-    super(param)
+    @id = param[:id]
+    @content = param[:content]
+    @user = param[:user]
+    @attachment = param[:attachment]
+    @timestamp = param[:timestamp]
+    @hashtags = param[:hashtags] || []
     @post = param[:post]
+  end
+
+  def valid?
+    @content.length <= 1000 && @content.gsub(/\s+/, '') != ''
+  end
+
+  def extract_hashtag
+    hashtag_pattern = /#\S+/
+    hashtags = @content.downcase.scan(hashtag_pattern)
+    hashtags.uniq
   end
 
   def raise_error_if_invalid

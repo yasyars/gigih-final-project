@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'dotenv/load'
 require_relative '../../db/db_connector'
 require_relative '../../controllers/comment_controller'
 require_relative '../../views/comment_view'
