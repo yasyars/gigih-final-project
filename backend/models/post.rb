@@ -4,6 +4,7 @@ require_relative '../db/db_connector'
 require_relative 'user'
 require_relative 'hashtag'
 require_relative 'content'
+require_relative 'comment'
 require_relative '../exception/post_error'
 require_relative '../exception/user_error'
 

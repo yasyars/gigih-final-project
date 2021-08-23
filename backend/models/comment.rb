@@ -59,8 +59,6 @@ class Comment < Content
   end
 
   def self.get_array_from_query_result(raw_data)
-    return [] if raw_data.count.zero?
-
     comments = []
     raw_data.each do |data|
       comment = Comment.new({
