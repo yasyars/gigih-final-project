@@ -8,6 +8,7 @@ require_relative '../views/comment_view'
 require_relative '../helper/file_handler'
 
 class CommentController
+  attr_reader :response
   def initialize
     @response = CommentView.new
   end
@@ -15,9 +16,9 @@ class CommentController
   def add_comment(params)
     user = User.find_by_id(params['user_id'])
     post = Post.find_by_id(params['post_id'])
-    file_handler = FileHandler.new
     
     if params['attachment'] 
+      file_handler = FileHandler.new
       path_file = file_handler.upload(params['attachment']) 
     else
       path_file = nil
@@ -45,7 +46,6 @@ class CommentController
   def get_all_comment(params,domain)
     comments = Comment.find_by_post_id(params['post_id'])
     comments.map { |comment| comment.set_base_url(domain) }
-
     @response.comment_array(comments)
   end
 
