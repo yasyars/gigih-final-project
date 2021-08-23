@@ -10,14 +10,6 @@ require_relative '../../helper/file_handler'
 require 'json'
 
 describe PostController do
-  before [:each] do
-    client = create_db_client
-    client.query('SET FOREIGN_KEY_CHECKS = 0')
-    client.query('TRUNCATE TABLE posts')
-    client.query('SET FOREIGN_KEY_CHECKS =1')
-    client.close
-  end
-
   describe '.add_post' do
     context 'when given valid params' do
       it 'should return right response' do

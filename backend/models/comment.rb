@@ -74,10 +74,4 @@ class Comment < Content
     end
     comments
   end
-
-  def to_hash
-    hash = super
-    hash['post'] = @post.to_hash
-    hash
-  end
 end

@@ -4,16 +4,11 @@ require 'dotenv/load'
 require_relative '../../db/db_connector'
 require_relative '../../controllers/user_controller'
 require_relative '../../views/user_view'
+require_relative '../../models/user'
+
 require 'json'
 
 describe UserController do
-  before [:each] do
-    client = create_db_client
-    client.query('SET FOREIGN_KEY_CHECKS = 0')
-    client.query('TRUNCATE TABLE users')
-    client.query('SET FOREIGN_KEY_CHECKS =1')
-    client.close
-  end
 
   describe '.register' do
     context 'when given valid params' do
@@ -27,6 +22,9 @@ describe UserController do
           'email' => email_str,
           'bio' => bio_str
         }
+        user = double
+        allow(User).to receive(:new).and_return(user)
+        allow(user).to receive(:save)
 
         response = controller.register(params)
         expected_json = {

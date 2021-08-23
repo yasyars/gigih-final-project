@@ -10,14 +10,6 @@ require_relative '../../models/post'
 require 'json'
 
 describe CommentController do
-  before [:each] do
-    client = create_db_client
-    client.query('SET FOREIGN_KEY_CHECKS = 0')
-    client.query('TRUNCATE TABLE comments')
-    client.query('SET FOREIGN_KEY_CHECKS =1')
-    client.close
-  end
-
   describe '.add_comment' do
     context 'when given valid params' do
       it 'should return right response' do

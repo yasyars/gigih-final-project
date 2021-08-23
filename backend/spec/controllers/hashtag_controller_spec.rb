@@ -7,14 +7,6 @@ require_relative '../../views/hashtag_view'
 require 'json'
 
 describe HashtagController do
-  before [:each] do
-    client = create_db_client
-    client.query('SET FOREIGN_KEY_CHECKS = 0')
-    client.query('TRUNCATE TABLE hashtags')
-    client.query('SET FOREIGN_KEY_CHECKS =1')
-    client.close
-  end
-
   describe '.get_trending' do
     let(:controller) { HashtagController.new }
     let(:response) { controller.get_trending }
