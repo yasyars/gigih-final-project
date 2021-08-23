@@ -36,19 +36,22 @@ class CommentController
   def get_comment(params, domain)
     word = params['hashtag']
     if word.nil?
-      comment = Comment.find_by_post_id(params['post_id'])
-      @response.comment_array(comment)
+      comments = Comment.find_by_post_id(params['post_id'])
+      comments.map { |comment| comment.set_base_url(domain) }
+
+      @response.comment_array(comments)
     else
-      get_comment_by_hashtag(params)
+      get_comment_by_hashtag(params,domain)
     end
   end
 
-  def get_comment_by_hashtag(params)
+  def get_comment_by_hashtag(params,domain)
     response = CommentView.new
     post = Post.find_by_id(params['post_id'])
     raise PostNotFound if post.nil?
-    comments = post.find_comment_by_hashtag_word(params['hashtag'])
-     
+
+    comments = post.find_comment_by_hashtag_word(params['hashtag']) 
+    comments.map { |comment| comment.set_base_url(domain) }
     @response.comment_array(comments)
   end
 end
