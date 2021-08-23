@@ -103,7 +103,7 @@ class Hashtag
 
   def valid?
     word_pattern = /^#\S+$/
-    !@word.nil? && @word.gsub(/\s+/, '') != '' && !!(@word =~ word_pattern)
+    !@word.nil? && !@word.strip.empty? && !!(@word =~ word_pattern)
   end
 
   def unique?

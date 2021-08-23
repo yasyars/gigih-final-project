@@ -51,7 +51,7 @@ describe CommentController do
     end
   end
 
-  describe '.get_comment_by_hashtag_word' do
+  describe '.get_comment_by_hashtag' do
     context 'when given valid params' do
       it 'should return right response' do
         controller = CommentController.new
@@ -73,6 +73,36 @@ describe CommentController do
         }.to_json
 
         expect(response).to eq(expected_json)
+      end
+    end
+  end
+
+  describe '.get_comment' do
+    context 'when given hashtag params' do
+      it 'should call get_comment_by_hashtag' do
+        controller = CommentController.new
+
+        params = {
+          'hashtag'=> '#ootd',
+          'post_id' => '1'
+        }
+                                                
+        expect(controller).to receive(:get_comment_by_hashtag)
+        controller.get_comment(params,'localhost')
+      end
+    end
+
+    context 'when given no hashtag params' do
+      it 'should call get_all_comment' do
+        controller = CommentController.new
+
+        params = {
+          'hashtag'=> '   ',
+          'post_id' => '1'
+        }
+                                                
+        expect(controller).to receive(:get_all_comment)
+        controller.get_comment(params,'localhost')
       end
     end
   end

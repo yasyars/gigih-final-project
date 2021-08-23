@@ -12,7 +12,11 @@ class FileHandler
   end
 
   def generate_new_name_if_exist(file)
-    file_name = file[:filename].gsub(/\s+/, '')
+    begin
+      file_name = file[:filename].gsub(/\s+/, '')
+    rescue
+      raise TypeError,"Attachment type is not valid, make sure it is a png, jpg, txt, or other types of file"
+    end
     path_file = PATH + file_name
     i = 1
     while exist?(path_file)

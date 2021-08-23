@@ -9,7 +9,7 @@ class Content
   end
   
   def valid?
-    @content.length <= 1000 && @content.gsub(/\s+/, '') != ''
+    @content.length <= 1000 && !@content.strip.empty?
   end
 
   def extract_hashtag
@@ -23,7 +23,7 @@ class Content
   end
 
   def set_base_url(domain) 
-    unless @attachment.nil? || @attachment.gsub(/\s+/, '')==""
+    unless @attachment.nil? || @attachment.strip.empty?
       @attachment = "#{domain}/#{@attachment}"
     else
       @attachment = nil

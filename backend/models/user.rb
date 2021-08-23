@@ -74,7 +74,7 @@ class User
   end
 
   def username_valid?
-    return false if @username.nil? || @username.gsub(/\s+/, '') == ''
+    return false if @username.nil? || @username.strip.empty?
 
     true
   end

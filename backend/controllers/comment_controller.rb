@@ -35,14 +35,18 @@ class CommentController
 
   def get_comment(params, domain)
     word = params['hashtag']
-    if word.nil?
-      comments = Comment.find_by_post_id(params['post_id'])
-      comments.map { |comment| comment.set_base_url(domain) }
-
-      @response.comment_array(comments)
+    if word.nil? || word.strip.empty?
+      get_all_comment(params,domain)
     else
       get_comment_by_hashtag(params,domain)
     end
+  end
+
+  def get_all_comment(params,domain)
+    comments = Comment.find_by_post_id(params['post_id'])
+    comments.map { |comment| comment.set_base_url(domain) }
+
+    @response.comment_array(comments)
   end
 
   def get_comment_by_hashtag(params,domain)
