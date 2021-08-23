@@ -6,6 +6,6 @@ end
 
 class DuplicateHashtag < ArgumentError
   def message
-    "Hashtag is exists"
+    "Hashtag already exists"
   end
 end
