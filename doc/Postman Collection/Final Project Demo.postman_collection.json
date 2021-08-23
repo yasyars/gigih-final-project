@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7b64ad86-aaca-434d-ae11-bdd94114d587",
+		"_postman_id": "e36d08fe-23c1-45b7-9a3b-7f7192e5ba1d",
 		"name": "Final Project Demo",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -111,7 +111,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "{{social_media_service}}/post",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post"
+					]
 				}
 			},
 			"response": []
@@ -207,7 +213,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "{{social_media_service}}/post/1/comment",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post",
+						"1",
+						"comment"
+					]
 				}
 			},
 			"response": []
@@ -218,7 +232,21 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "{{social_media_service}}/post/1/comment?hashtag=%23mariberdendang",
+					"host": [
+						"{{social_media_service}}"
+					],
+					"path": [
+						"post",
+						"1",
+						"comment"
+					],
+					"query": [
+						{
+							"key": "hashtag",
+							"value": "%23mariberdendang"
+						}
+					]
 				}
 			},
 			"response": []
