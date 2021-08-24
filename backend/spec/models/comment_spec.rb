@@ -11,6 +11,7 @@ describe Comment do
   before [:each] do
     client = create_db_client
     client.query('SET FOREIGN_KEY_CHECKS = 0')
+    client.query('TRUNCATE TABLE posts')
     client.query('TRUNCATE TABLE comments')
     client.query('TRUNCATE TABLE comments_hashtags')
     client.query('SET FOREIGN_KEY_CHECKS =1')
