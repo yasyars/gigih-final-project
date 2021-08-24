@@ -11,36 +11,39 @@ class CommentView
     get_not_found: 'No comment matched'
   }.freeze
 
-  def create_success
-    { 'status' => MESSAGE[:status_ok],
-      'message' => MESSAGE[:create_success] }.to_json
+  def initialize
+    @status = MESSAGE[:status_ok]
+    @message = MESSAGE[:get_not_found]
+    @data =nil
   end
 
-  def post_data(post)
-    return empty_post if post.nil?
-
-    response = {
-      'status' => MESSAGE[:status_ok],
-      'message' => MESSAGE[:get_success],
-      'data' => comments.to_hash
+  def create_success
+    @message = MESSAGE[:create_success]
+    { 
+      'status' => @status,
+      'message' =>  @message
     }.to_json
   end
 
-  def comment_array(comments)
-    response = {
-      'status' => MESSAGE[:status_ok],
-      'message' => MESSAGE[:get_success],
-      'data' => comments.map(&:to_hash)
-    }
-    response['message'] = MESSAGE[:get_not_found] if comments.empty?
-    response.to_json
+  def post_data(post)
+    return send_result if post.nil?
+
+    @message = MESSAGE[:get_success]
+    @data = comments.to_hash
+    send_result
   end
 
-  def empty_post
+  def comment_array(comments)
+    @message = MESSAGE[:get_success] unless comments.empty?
+    @data = comments.map(&:to_hash)
+    send_result
+  end
+
+  def send_result
     {
-      'status' => MESSAGE[:status_ok],
-      'message' => MESSAGE[:get_not_found],
-      'data' => nil
+      'status' => @status,
+      'message' => @message,
+      'data' => @data
     }.to_json
   end
 end

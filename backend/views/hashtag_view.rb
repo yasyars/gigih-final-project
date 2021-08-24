@@ -10,13 +10,23 @@ class HashtagView
     get_not_found: 'No hashtag matched'
   }.freeze
 
+  def initialize
+    @status = MESSAGE[:status_ok]
+    @message = MESSAGE[:get_not_found]
+    @data = nil
+  end
+
   def hashtag_array(hashtags)
-    response = {
-      'status'=> MESSAGE[:status_ok],
-      'message'=> MESSAGE[:get_success],
-      'data'=> hashtags.map(&:to_hash)
-    }
-    response['message'] = MESSAGE[:get_not_found] if hashtags.empty?
-    response.to_json
+    @message = MESSAGE[:get_success] unless hashtags.empty?
+    @data = hashtags.map(&:to_hash)
+    send_result
+  end
+
+  def send_result
+  {
+    'status' => @status,
+    'message' => @message,
+    'data' => @data
+  }.to_json
   end
 end

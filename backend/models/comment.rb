@@ -51,6 +51,9 @@ class Comment < Content
   end
 
   def self.find_by_post_id(post_id)
+    post = Post.find_by_id(post_id)
+    raise PostNotFound if post.nil?
+
     client = create_db_client
     query = "SELECT * FROM comments WHERE post_id = #{post_id}"
     raw_data = client.query(query)

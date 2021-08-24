@@ -266,8 +266,17 @@ describe Comment do
   end
 
   describe '.find_by_post' do
-    context 'when there is no post that matches' do
+     context 'when post is not created' do
+      it 'should return raise error' do
+        expect{Comment.find_by_post_id(1)}.to raise_error(PostNotFound)
+      end
+    end
+
+    context 'when there is no comment that matches' do
       it 'should return empty array' do
+        post = double
+        allow(Post).to receive(:find_by_id).and_return post
+        allow(post).to receive(:nil?).and_return(false)
         res = Comment.find_by_post_id(1)
         expect(res).to eq([])
       end
