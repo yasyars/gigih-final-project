@@ -9,6 +9,15 @@ require_relative './controllers/comment_controller'
 require_relative './controllers/hashtag_controller'
 
 set :show_exceptions, false
+set :bind, '0.0.0.0'
+
+configure do
+  enable :cross_origin
+end
+
+before do
+  response.headers['Access-Control-Allow-Origin'] = '*'
+end
 
 error do
   status 400
@@ -34,7 +43,7 @@ end
 
 post '/post' do
   controller = PostController.new
-  status 200
+  status 201
   controller.add_post(params)
 end
 
@@ -59,10 +68,17 @@ end
 
 post '/post/:post_id/comment' do
   controller = CommentController.new
-  status 200
+  status 201
   controller.add_comment(params)
 end
 
 get '/uploads/:file_name' do
   send_file "uploads/#{params['file_name']}"
+end
+
+options "*" do
+  response.headers["Allow"] = "GET, PUT, POST, DELETE, OPTIONS"
+  response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"
+  response.headers["Access-Control-Allow-Origin"] = "*"
+  200
 end

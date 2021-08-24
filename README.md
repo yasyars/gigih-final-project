@@ -80,3 +80,7 @@ This app handles simple activity in social media. This app able to handle:
   - Environment Gigih Development: using localhost:4567 as the domain (please do run the app first)
   - Environment Gigih Production: using 34.97.129.31:4567 as the domain
 - Send the API request
+
+## Supporting Frontend
+The front-end that uses the some of the API endpoint is available. Run the frontend in local environment. Detailed instruction about how to run the app is explained in related repository:
+https://github.com/yasyars/social-media-simple
