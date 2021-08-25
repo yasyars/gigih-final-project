@@ -82,5 +82,5 @@ This app handles simple activity in social media. This app able to handle:
 - Send the API request
 
 ## Supporting Frontend
-The front-end that uses the some of the API endpoint is available. Run the frontend in local environment. Detailed instruction about how to run the app is explained in related repository:
+The front-end that uses some of the API endpoint is available. Run the frontend in local environment. Detailed instruction about how to run the app is explained in related repository:
 https://github.com/yasyars/social-media-simple
